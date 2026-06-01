@@ -37,8 +37,8 @@ export default function Sidebar({ activeView, onViewChange, onSectionClick }: Si
       <div
         style={{
           padding: collapsed ? "16px 0" : "16px 18px",
-          borderBottom: "2px solid var(--accent)",
-          background: "var(--accent)",
+          borderBottom: "2px solid #000",
+          background: "#000",
           flexShrink: 0,
           display: "flex",
           alignItems: collapsed ? "center" : "flex-start",
