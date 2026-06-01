@@ -320,14 +320,13 @@ export default function NewsFeed({
                         onChange={() => onToggleSelect(article.id)}
                         style={{ accentColor: "var(--accent)", width: "12px", height: "12px" }}
                       />
-                      <span className="mono" style={{ fontSize: "9.5px", color: "var(--ink-2)", letterSpacing: "0.07em", fontWeight: 500 }}>
+                      <span className="mono" style={{ fontSize: "9.5px", color: "var(--ink)", letterSpacing: "0.07em", fontWeight: 600 }}>
                         SELECT
                       </span>
                     </label>
 
-                    <span className="mono" style={{ fontSize: "10px", color: "var(--ink-3)" }}>
+                    <span className="mono" style={{ fontSize: "10px", color: "var(--ink-2)", fontWeight: 500 }}>
                       {new Date(article.timestamp).toLocaleTimeString("en-US", { hour: "2-digit", minute: "2-digit" })}
-                      &nbsp;·&nbsp;{article.readTime} min
                     </span>
 
                     <div className="flex items-center gap-1" style={{ marginLeft: "auto" }}>
@@ -337,12 +336,12 @@ export default function NewsFeed({
                         target="_blank"
                         rel="noopener noreferrer"
                         className="flex flex-col items-center"
-                        style={{ color: "var(--ink-4)", padding: "3px 6px", gap: "2px", transition: "color 0.1s" }}
-                        onMouseEnter={e => (e.currentTarget.style.color = "var(--ink)")}
-                        onMouseLeave={e => (e.currentTarget.style.color = "var(--ink-4)")}
+                        style={{ color: "var(--ink-2)", padding: "3px 6px", gap: "2px", transition: "color 0.1s" }}
+                        onMouseEnter={e => (e.currentTarget.style.color = "var(--accent)")}
+                        onMouseLeave={e => (e.currentTarget.style.color = "var(--ink-2)")}
                       >
-                        <ArrowUpRight size={11} />
-                        <span className="mono" style={{ fontSize: "7.5px", letterSpacing: "0.06em" }}>OPEN</span>
+                        <ArrowUpRight size={12} />
+                        <span className="mono" style={{ fontSize: "7.5px", letterSpacing: "0.06em", fontWeight: 600 }}>OPEN</span>
                       </a>
 
                       <div style={{ width: "1px", height: "24px", background: "var(--rule)", flexShrink: 0 }} />
@@ -353,7 +352,7 @@ export default function NewsFeed({
                         title={isPinned ? "Unpin article" : "Pin article"}
                         className="flex flex-col items-center"
                         style={{
-                          color: isPinned ? "var(--accent)" : "var(--ink-4)",
+                          color: isPinned ? "var(--accent)" : "var(--ink-2)",
                           padding: "3px 6px",
                           gap: "2px",
                           background: isPinned ? "rgba(10,25,49,0.07)" : "transparent",
@@ -361,10 +360,10 @@ export default function NewsFeed({
                           transition: "all 0.1s",
                         }}
                         onMouseEnter={e => { if (!isPinned) (e.currentTarget as HTMLElement).style.color = "var(--accent)"; }}
-                        onMouseLeave={e => { if (!isPinned) (e.currentTarget as HTMLElement).style.color = "var(--ink-4)"; }}
+                        onMouseLeave={e => { if (!isPinned) (e.currentTarget as HTMLElement).style.color = "var(--ink-2)"; }}
                       >
                         {isPinned ? <PinOff size={13} /> : <Pin size={13} />}
-                        <span className="mono" style={{ fontSize: "7.5px", letterSpacing: "0.06em" }}>{isPinned ? "UNPIN" : "PIN"}</span>
+                        <span className="mono" style={{ fontSize: "7.5px", letterSpacing: "0.06em", fontWeight: 600 }}>{isPinned ? "UNPIN" : "PIN"}</span>
                       </button>
 
                       {/* Take button */}
