@@ -8,6 +8,7 @@ const NAV = [
   { icon: PenLine, label: "Editorial Studio", id: "studio" },
   { icon: Archive, label: "Knowledge Vault",  id: "vault" },
   { icon: Send,    label: "Distribution",     id: "distribute" },
+  { icon: Settings, label: "Settings",        id: "settings" },
 ];
 
 const SECTIONS = ["Layer 2", "AI & LLMs", "DeFi", "Regulation", "Markets", "Infrastructure"];
@@ -15,9 +16,10 @@ const SECTIONS = ["Layer 2", "AI & LLMs", "DeFi", "Regulation", "Markets", "Infr
 interface SidebarProps {
   activeView: string;
   onViewChange: (v: string) => void;
+  onSectionClick?: (section: string) => void;
 }
 
-export default function Sidebar({ activeView, onViewChange }: SidebarProps) {
+export default function Sidebar({ activeView, onViewChange, onSectionClick }: SidebarProps) {
   const [collapsed, setCollapsed] = useState(false);
 
   return (
@@ -137,6 +139,7 @@ export default function Sidebar({ activeView, onViewChange }: SidebarProps) {
             {SECTIONS.map(s => (
               <button
                 key={s}
+                onClick={() => onSectionClick?.(s)}
                 className="w-full text-left"
                 style={{
                   display: "block",
@@ -163,24 +166,6 @@ export default function Sidebar({ activeView, onViewChange }: SidebarProps) {
         )}
       </nav>
 
-      {/* ── Footer ───────────────────────────────── */}
-      <div style={{ borderTop: "1px solid var(--rule)", flexShrink: 0 }}>
-        <button
-          className="w-full flex items-center"
-          style={{
-            gap: "10px",
-            padding: collapsed ? "14px 0" : "12px 18px",
-            justifyContent: collapsed ? "center" : "flex-start",
-            color: "var(--ink-3)",
-            fontSize: "12px",
-          }}
-          onMouseEnter={e => (e.currentTarget.style.background = "#F8F8F6")}
-          onMouseLeave={e => (e.currentTarget.style.background = "transparent")}
-        >
-          <Settings size={13} strokeWidth={1.5} />
-          {!collapsed && <span>Settings</span>}
-        </button>
-      </div>
     </aside>
   );
 }

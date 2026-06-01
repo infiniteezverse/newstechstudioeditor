@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useCallback } from "react";
+import { useState, useCallback, useEffect } from "react";
 import { RotateCw, ArrowUpRight, ChevronLeft, Pin, PinOff } from "lucide-react";
 import { MOCK_ARTICLES, REFRESH_POOL, type Article } from "@/lib/mock-data";
 
@@ -11,23 +11,32 @@ const SENTIMENT = {
 };
 
 const FILTERS = ["All", "DeFi", "Layer2", "AI", "Regulation", "Markets"] as const;
+type FilterVal = typeof FILTERS[number];
 
 interface NewsFeedProps {
   onGenerateTake: (a: Article) => void;
   selectedIds: Set<string>;
   onToggleSelect: (id: string) => void;
   onCollapse: () => void;
+  initialFilter?: string | null;
+  onPinnedChange?: (articles: Article[]) => void;
 }
 
 export default function NewsFeed({
-  onGenerateTake, selectedIds, onToggleSelect, onCollapse,
+  onGenerateTake, selectedIds, onToggleSelect, onCollapse, initialFilter, onPinnedChange,
 }: NewsFeedProps) {
-  const [filter, setFilter]     = useState<typeof FILTERS[number]>("All");
+  const [filter, setFilter]     = useState<FilterVal>("All");
   const [spinning, setSpinning] = useState(false);
   const [articles, setArticles] = useState<Article[]>(MOCK_ARTICLES);
   const [pinnedIds, setPinnedIds] = useState<Set<string>>(new Set());
-  // Track which pool articles have been loaded so we don't duplicate
   const [usedRefreshIds, setUsedRefreshIds] = useState<Set<string>>(new Set());
+
+  // Apply section filter when sidebar section is clicked
+  useEffect(() => {
+    if (initialFilter && FILTERS.includes(initialFilter as FilterVal)) {
+      setFilter(initialFilter as FilterVal);
+    }
+  }, [initialFilter]);
 
   const togglePin = useCallback((id: string) => {
     setPinnedIds(prev => {
@@ -62,6 +71,11 @@ export default function NewsFeed({
       setSpinning(false);
     }, 700);
   }
+
+  // Notify parent when pinned set changes
+  useEffect(() => {
+    onPinnedChange?.(articles.filter(a => pinnedIds.has(a.id)));
+  }, [pinnedIds, articles, onPinnedChange]);
 
   // Display order: pinned first, then rest; filter applies to both
   const displayed = [
