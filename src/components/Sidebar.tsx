@@ -37,8 +37,8 @@ export default function Sidebar({ activeView, onViewChange, onSectionClick }: Si
       <div
         style={{
           padding: collapsed ? "16px 0" : "14px 16px",
-          borderBottom: "2px solid #000",
-          background: "#000",
+          borderBottom: "2px solid var(--accent)",
+          background: "var(--accent)",
           flexShrink: 0,
           display: "flex",
           alignItems: "center",
@@ -103,7 +103,7 @@ export default function Sidebar({ activeView, onViewChange, onSectionClick }: Si
                 padding: collapsed ? "12px 0" : "10px 16px",
                 justifyContent: collapsed ? "center" : "flex-start",
                 background: active ? "#ECEEF5" : "transparent",
-                borderLeft: active ? "3px solid #000" : "3px solid transparent",
+                borderLeft: active ? "3px solid var(--accent)" : "3px solid transparent",
                 color: active ? "var(--ink)" : "var(--ink-2)",
                 transition: "background 0.12s, color 0.12s",
               }}
@@ -123,7 +123,7 @@ export default function Sidebar({ activeView, onViewChange, onSectionClick }: Si
               <Icon
                 size={14}
                 strokeWidth={active ? 2 : 1.5}
-                style={{ color: active ? "#000" : "var(--ink-3)", flexShrink: 0, transition: "color 0.12s" }}
+                style={{ color: active ? "var(--accent)" : "var(--ink-3)", flexShrink: 0, transition: "color 0.12s" }}
               />
               {!collapsed && (
                 <>
@@ -131,7 +131,7 @@ export default function Sidebar({ activeView, onViewChange, onSectionClick }: Si
                   {badge && (
                     <span
                       className="mono"
-                      style={{ fontSize: "9px", background: "#000", color: "white", padding: "1px 6px", letterSpacing: "0.05em" }}
+                      style={{ fontSize: "9px", background: "var(--accent)", color: "white", padding: "1px 6px", letterSpacing: "0.05em" }}
                     >
                       {badge}
                     </span>
