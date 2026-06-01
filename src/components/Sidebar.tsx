@@ -46,17 +46,11 @@ export default function Sidebar({ activeView, onViewChange }: SidebarProps) {
       >
         {!collapsed && (
           <div>
-            <p
-              className="mono"
-              style={{ fontSize: "8px", color: "rgba(255,255,255,0.5)", letterSpacing: "0.14em", marginBottom: "5px" }}
-            >
-              SATELLITE OF
-            </p>
             <h1
               className="serif"
-              style={{ fontSize: "16px", fontWeight: 700, color: "white", letterSpacing: "-0.01em", lineHeight: 1.15 }}
+              style={{ fontSize: "16px", fontWeight: 700, color: "white", letterSpacing: "-0.01em", lineHeight: 1.2 }}
             >
-              Tech News Hub
+              Tech News Studio
             </h1>
           </div>
         )}
@@ -81,7 +75,17 @@ export default function Sidebar({ activeView, onViewChange }: SidebarProps) {
         >
           <span style={{ width: "6px", height: "6px", borderRadius: "50%", background: "#0F5C2E", flexShrink: 0, display: "inline-block" }} />
           <span className="mono" style={{ fontSize: "9px", color: "var(--ink-3)", letterSpacing: "0.08em" }}>
-            LIVE · cryptonewsorg.com
+            LIVE ·{" "}
+            <a
+              href="https://cryptonewsorg.com"
+              target="_blank"
+              rel="noopener noreferrer"
+              style={{ color: "var(--ink-2)", textDecoration: "underline", textUnderlineOffset: "2px" }}
+              onMouseEnter={e => (e.currentTarget.style.color = "var(--accent)")}
+              onMouseLeave={e => (e.currentTarget.style.color = "var(--ink-2)")}
+            >
+              cryptonewsorg.com
+            </a>
           </span>
         </div>
       )}
