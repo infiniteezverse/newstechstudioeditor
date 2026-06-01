@@ -336,31 +336,35 @@ export default function NewsFeed({
                         href="https://cryptonewsorg.com"
                         target="_blank"
                         rel="noopener noreferrer"
-                        style={{ color: "var(--ink-4)", padding: "3px", display: "flex" }}
+                        className="flex flex-col items-center"
+                        style={{ color: "var(--ink-4)", padding: "3px 6px", gap: "2px", transition: "color 0.1s" }}
                         onMouseEnter={e => (e.currentTarget.style.color = "var(--ink)")}
                         onMouseLeave={e => (e.currentTarget.style.color = "var(--ink-4)")}
                       >
                         <ArrowUpRight size={11} />
+                        <span className="mono" style={{ fontSize: "7.5px", letterSpacing: "0.06em" }}>OPEN</span>
                       </a>
+
+                      <div style={{ width: "1px", height: "24px", background: "var(--rule)", flexShrink: 0 }} />
 
                       {/* Pin button */}
                       <button
                         onClick={() => togglePin(article.id)}
                         title={isPinned ? "Unpin article" : "Pin article"}
+                        className="flex flex-col items-center"
                         style={{
                           color: isPinned ? "var(--accent)" : "var(--ink-4)",
-                          padding: "3px 5px",
+                          padding: "3px 6px",
+                          gap: "2px",
                           background: isPinned ? "rgba(10,25,49,0.07)" : "transparent",
                           border: isPinned ? "1px solid rgba(10,25,49,0.15)" : "1px solid transparent",
-                          display: "flex",
-                          alignItems: "center",
-                          gap: "3px",
                           transition: "all 0.1s",
                         }}
                         onMouseEnter={e => { if (!isPinned) (e.currentTarget as HTMLElement).style.color = "var(--accent)"; }}
                         onMouseLeave={e => { if (!isPinned) (e.currentTarget as HTMLElement).style.color = "var(--ink-4)"; }}
                       >
                         {isPinned ? <PinOff size={13} /> : <Pin size={13} />}
+                        <span className="mono" style={{ fontSize: "7.5px", letterSpacing: "0.06em" }}>{isPinned ? "UNPIN" : "PIN"}</span>
                       </button>
 
                       {/* Take button */}
