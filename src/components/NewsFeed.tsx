@@ -121,12 +121,22 @@ export default function NewsFeed({
           <div className="flex items-center gap-1">
             <button
               onClick={handleRefresh}
-              title="Refresh feed"
-              style={{ color: "var(--ink-4)", padding: "5px", display: "flex", alignItems: "center", gap: "4px" }}
-              onMouseEnter={e => (e.currentTarget.style.color = "var(--accent)")}
-              onMouseLeave={e => (e.currentTarget.style.color = "var(--ink-4)")}
+              className="mono flex items-center gap-1.5"
+              style={{
+                fontSize: "10px",
+                letterSpacing: "0.07em",
+                fontWeight: 500,
+                padding: "5px 11px",
+                border: "1px solid var(--rule-heavy)",
+                color: "var(--ink-2)",
+                background: "transparent",
+                transition: "all 0.12s",
+              }}
+              onMouseEnter={e => { (e.currentTarget as HTMLElement).style.background = "var(--accent)"; (e.currentTarget as HTMLElement).style.color = "white"; (e.currentTarget as HTMLElement).style.borderColor = "var(--accent)"; }}
+              onMouseLeave={e => { (e.currentTarget as HTMLElement).style.background = "transparent"; (e.currentTarget as HTMLElement).style.color = "var(--ink-2)"; (e.currentTarget as HTMLElement).style.borderColor = "var(--rule-heavy)"; }}
             >
-              <RotateCw size={13} className={spinning ? "animate-spin" : ""} />
+              <RotateCw size={11} className={spinning ? "animate-spin" : ""} />
+              REFRESH
             </button>
             <button
               onClick={onCollapse}
