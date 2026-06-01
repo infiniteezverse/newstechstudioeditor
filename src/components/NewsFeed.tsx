@@ -99,7 +99,7 @@ export default function NewsFeed({
       >
         <div className="flex items-start justify-between">
           <div>
-            <p className="kicker" style={{ marginBottom: "5px", color: "var(--accent)", fontSize: "11px", letterSpacing: "0.1em" }}>Wire Feed</p>
+            <p className="kicker" style={{ marginBottom: "5px", color: "var(--accent)", fontSize: "12px", letterSpacing: "0.1em" }}>Wire Feed</p>
           </div>
 
           <div className="flex items-center gap-1">
@@ -135,13 +135,13 @@ export default function NewsFeed({
         </div>
 
         <div className="flex items-center gap-3" style={{ marginTop: "8px" }}>
-          <span className="mono" style={{ fontSize: "10.5px", color: "var(--ink-2)", fontWeight: 500, letterSpacing: "0.05em" }}>
+          <span className="mono" style={{ fontSize: "11.5px", color: "var(--ink-2)", fontWeight: 500, letterSpacing: "0.05em" }}>
             {displayed.length} DISPATCHES
           </span>
           {pinnedCount > 0 && (
             <span
               className="mono flex items-center gap-1"
-              style={{ fontSize: "9px", color: "var(--accent)", background: "rgba(10,25,49,0.07)", padding: "1px 7px", border: "1px solid rgba(10,25,49,0.15)" }}
+              style={{ fontSize: "10px", color: "var(--accent)", background: "rgba(10,25,49,0.07)", padding: "1px 7px", border: "1px solid rgba(10,25,49,0.15)" }}
             >
               <Pin size={8} />
               {pinnedCount} PINNED
@@ -205,7 +205,7 @@ export default function NewsFeed({
             style={{ background: "#EDF2FF", borderBottom: "1px solid rgba(10,25,49,0.1)" }}
           >
             <Pin size={9} style={{ color: "var(--accent)" }} />
-            <span className="mono" style={{ fontSize: "8.5px", color: "var(--accent)", letterSpacing: "0.1em" }}>
+            <span className="mono" style={{ fontSize: "9.5px", color: "var(--accent)", letterSpacing: "0.1em" }}>
               PINNED — {pinnedCount} ARTICLE{pinnedCount > 1 ? "S" : ""}
             </span>
           </div>
@@ -225,7 +225,7 @@ export default function NewsFeed({
                   className="flex items-center gap-2 px-5 py-2 sticky top-0 z-10"
                   style={{ background: "#F8F8F5", borderBottom: "1px solid var(--rule)", borderTop: "1px solid var(--rule)" }}
                 >
-                  <span className="mono" style={{ fontSize: "8.5px", color: "var(--ink-3)", letterSpacing: "0.1em" }}>
+                  <span className="mono" style={{ fontSize: "9.5px", color: "var(--ink-3)", letterSpacing: "0.1em" }}>
                     LATEST — {unpinnedCount} ARTICLE{unpinnedCount !== 1 ? "S" : ""}
                   </span>
                 </div>
@@ -248,14 +248,14 @@ export default function NewsFeed({
                   {/* Category + sentiment */}
                   <div className="flex items-center justify-between" style={{ marginBottom: "7px" }}>
                     <div className="flex items-center gap-2">
-                      <span className="kicker" style={{ color: "var(--accent)", fontSize: "8.5px" }}>
+                      <span className="kicker" style={{ color: "var(--accent)", fontSize: "9.5px" }}>
                         {article.category}
                       </span>
                       {article.trending && (
-                        <span className="mono" style={{ fontSize: "8px", color: "var(--ink-3)" }}>↑ TRENDING</span>
+                        <span className="mono" style={{ fontSize: "9px", color: "var(--ink-3)" }}>↑ TRENDING</span>
                       )}
                     </div>
-                    <span className="mono" style={{ fontSize: "8.5px", color: sent.color, fontWeight: 500 }}>
+                    <span className="mono" style={{ fontSize: "9.5px", color: sent.color, fontWeight: 500 }}>
                       {sent.label.toUpperCase()}
                     </span>
                   </div>
@@ -264,7 +264,7 @@ export default function NewsFeed({
                   <h2
                     className="serif"
                     style={{
-                      fontSize: "14.5px",
+                      fontSize: "15.5px",
                       fontWeight: 700,
                       lineHeight: 1.3,
                       color: "var(--ink)",
@@ -281,7 +281,7 @@ export default function NewsFeed({
                   {/* Summary */}
                   <p
                     style={{
-                      fontSize: "12.5px",
+                      fontSize: "13.5px",
                       color: "var(--ink-2)",
                       lineHeight: 1.6,
                       marginBottom: "12px",
@@ -309,7 +309,7 @@ export default function NewsFeed({
                       </span>
                     </label>
 
-                    <span className="mono" style={{ fontSize: "10px", color: "var(--ink-2)", fontWeight: 500 }}>
+                    <span className="mono" style={{ fontSize: "11px", color: "var(--ink-2)", fontWeight: 500 }}>
                       {new Date(article.timestamp).toLocaleTimeString("en-US", { hour: "2-digit", minute: "2-digit" })}
                     </span>
 

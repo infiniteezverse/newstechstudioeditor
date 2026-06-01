@@ -126,8 +126,8 @@ export default function AITakePanel({ sourceArticle, onPushToEditor, onCollapse 
       >
         <div className="flex items-start justify-between">
           <div>
-            <p className="kicker" style={{ marginBottom: "4px", color: "var(--accent)", fontSize: "11px", letterSpacing: "0.1em" }}>AI Synthesis</p>
-            <span className="mono" style={{ fontSize: "10px", color: "var(--ink-3)", fontWeight: 500 }}>
+            <p className="kicker" style={{ marginBottom: "4px", color: "var(--accent)", fontSize: "12px", letterSpacing: "0.1em" }}>AI Synthesis</p>
+            <span className="mono" style={{ fontSize: "11px", color: "var(--ink-3)", fontWeight: 500 }}>
               MASTER SCHEMA v1.0
             </span>
           </div>
@@ -160,16 +160,16 @@ export default function AITakePanel({ sourceArticle, onPushToEditor, onCollapse 
             >
               <p
                 className="serif"
-                style={{ fontSize: "13px", fontWeight: 700, lineHeight: 1.3, color: "var(--ink)", marginBottom: "4px" }}
+                style={{ fontSize: "14px", fontWeight: 700, lineHeight: 1.3, color: "var(--ink)", marginBottom: "4px" }}
               >
                 {sourceArticle.title}
               </p>
-              <span className="mono" style={{ fontSize: "9px", color: "var(--ink-3)" }}>
+              <span className="mono" style={{ fontSize: "10px", color: "var(--ink-3)" }}>
                 {sourceArticle.source} · {sourceArticle.category}
               </span>
             </div>
           ) : (
-            <p style={{ fontSize: "12px", color: "var(--ink-3)", fontStyle: "italic", lineHeight: 1.5 }}>
+            <p style={{ fontSize: "13px", color: "var(--ink-3)", fontStyle: "italic", lineHeight: 1.5 }}>
               Select an article from the Wire Feed to begin synthesis.
             </p>
           )}
@@ -189,8 +189,8 @@ export default function AITakePanel({ sourceArticle, onPushToEditor, onCollapse 
             }}
           >
             <div className="text-left">
-              <span style={{ fontSize: "12.5px", fontWeight: 500 }}>{format.label}</span>
-              <span className="mono" style={{ fontSize: "9px", color: "var(--ink-3)", marginLeft: "8px" }}>
+              <span style={{ fontSize: "13.5px", fontWeight: 500 }}>{format.label}</span>
+              <span className="mono" style={{ fontSize: "10px", color: "var(--ink-3)", marginLeft: "8px" }}>
                 {format.platform}
               </span>
             </div>
@@ -214,10 +214,10 @@ export default function AITakePanel({ sourceArticle, onPushToEditor, onCollapse 
                   onMouseEnter={e => { if (format.id !== f.id) (e.currentTarget as HTMLElement).style.background = "#F5F5F3"; }}
                   onMouseLeave={e => { if (format.id !== f.id) (e.currentTarget as HTMLElement).style.background = "white"; }}
                 >
-                  <span style={{ fontSize: "12px", fontWeight: format.id === f.id ? 500 : 400, color: "var(--ink)" }}>
+                  <span style={{ fontSize: "13px", fontWeight: format.id === f.id ? 500 : 400, color: "var(--ink)" }}>
                     {f.label}
                   </span>
-                  <span className="mono" style={{ fontSize: "9px", color: "var(--ink-3)" }}>{f.platform}</span>
+                  <span className="mono" style={{ fontSize: "10px", color: "var(--ink-3)" }}>{f.platform}</span>
                 </button>
               ))}
             </div>
@@ -226,7 +226,7 @@ export default function AITakePanel({ sourceArticle, onPushToEditor, onCollapse 
 
         {/* Persona */}
         <div style={{ padding: "16px 18px", borderBottom: "1px solid var(--rule)" }}>
-          <p className="kicker" style={{ marginBottom: "10px", fontSize: "10px", letterSpacing: "0.1em", color: "var(--ink-2)" }}>Voice Persona</p>
+          <p className="kicker" style={{ marginBottom: "10px", fontSize: "11px", letterSpacing: "0.1em", color: "var(--ink-2)" }}>Voice Persona</p>
           <div className="flex flex-wrap" style={{ gap: "7px" }}>
             {PERSONAS.map(p => (
               <button
@@ -295,7 +295,7 @@ export default function AITakePanel({ sourceArticle, onPushToEditor, onCollapse 
                 borderTop: "1px solid var(--rule)",
               }}
             >
-              <span className="mono" style={{ fontSize: "9px", color: "var(--accent)", letterSpacing: "0.08em" }}>
+              <span className="mono" style={{ fontSize: "10px", color: "var(--accent)", letterSpacing: "0.08em" }}>
                 GENERATED · {format.label.toUpperCase()} · {persona.toUpperCase()}
               </span>
               <div className="flex items-center gap-3">
@@ -320,7 +320,7 @@ export default function AITakePanel({ sourceArticle, onPushToEditor, onCollapse 
 
             {/* Take text */}
             <div style={{ padding: "16px 18px", borderBottom: "1px solid var(--rule)", maxHeight: "240px", overflowY: "auto", background: "white" }}>
-              <pre style={{ fontSize: "12.5px", lineHeight: 1.72, color: "var(--ink-2)", whiteSpace: "pre-wrap", fontFamily: "inherit" }}>
+              <pre style={{ fontSize: "13.5px", lineHeight: 1.72, color: "var(--ink-2)", whiteSpace: "pre-wrap", fontFamily: "inherit" }}>
                 {take}
               </pre>
             </div>
