@@ -160,20 +160,22 @@ export default function NewsFeed({
       {/* ── Section filters ──────────────────────── */}
       <div
         className="flex overflow-x-auto shrink-0"
-        style={{ borderBottom: "1px solid var(--rule)" }}
+        style={{ borderBottom: "1px solid var(--rule)", padding: "0 4px" }}
       >
         {FILTERS.map(f => (
           <button
             key={f}
             onClick={() => setFilter(f)}
-            className="mono shrink-0 px-3 py-2.5"
+            className="mono shrink-0"
             style={{
               fontSize: "9px",
-              letterSpacing: "0.1em",
+              letterSpacing: "0.08em",
+              padding: "9px 10px",
               color: filter === f ? "var(--accent)" : "var(--ink-3)",
               borderBottom: filter === f ? "2px solid var(--accent)" : "2px solid transparent",
               marginBottom: "-1px",
               background: "transparent",
+              whiteSpace: "nowrap",
             }}
           >
             {f.toUpperCase()}
