@@ -1,26 +1,141 @@
 @import "tailwindcss";
 
 :root {
-  --background: #ffffff;
-  --foreground: #171717;
+  color-scheme: light;
+
+  /* ── Canvas layers ──────────────────────────── */
+  --canvas:      #FAFAF7;   /* warm off-white global bg */
+  --panel-feed:  #FFFFFF;   /* wire feed — pure white */
+  --panel-ai:    #F7F6F2;   /* ai column — warm cream */
+  --panel-editor:#FDFCFA;   /* editor — near-white writing surface */
+
+  /* ── Text ──────────────────────────────────── */
+  --ink:   #0E0E12;
+  --ink-2: #4A4A58;
+  --ink-3: #8A8A98;
+  --ink-4: #BBBBC6;
+
+  /* ── Structure ─────────────────────────────── */
+  --rule:       #E4E4EA;
+  --rule-heavy: #CACAD4;
+
+  /* ── Accent — deep navy ─────────────────────── */
+  --accent:   #0A1931;
+  --accent-2: rgba(10, 25, 49, 0.07);
+  --accent-3: rgba(10, 25, 49, 0.03);
+
+  /* ── Signals ───────────────────────────────── */
+  --bull: #0F5C2E;
+  --bear: #7A1A1A;
 }
 
-@theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
+* { box-sizing: border-box; margin: 0; padding: 0; }
+
+html, body {
+  background: var(--canvas) !important;
+  color: var(--ink);
+  font-family: 'Inter', system-ui, -apple-system, sans-serif;
+  font-size: 13px;
+  line-height: 1.5;
+  height: 100%;
+  overflow: hidden;
+  -webkit-font-smoothing: antialiased;
 }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
+::-webkit-scrollbar { width: 4px; }
+::-webkit-scrollbar-track { background: transparent; }
+::-webkit-scrollbar-thumb { background: var(--rule-heavy); }
+::-webkit-scrollbar-thumb:hover { background: var(--ink-4); }
+
+/* ── Type ─────────────────────────────────────── */
+.serif { font-family: 'Playfair Display', Georgia, 'Times New Roman', serif; }
+.mono  { font-family: 'JetBrains Mono', 'SF Mono', monospace; }
+
+/* ── Utility classes ─────────────────────────── */
+.kicker {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 9px;
+  font-weight: 500;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--ink-3);
 }
 
-body {
-  background: var(--background);
-  color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+/* ── Collapsed panel label ───────────────────── */
+.panel-label-rotated {
+  writing-mode: vertical-rl;
+  text-orientation: mixed;
+  transform: rotate(180deg);
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 9px;
+  font-weight: 600;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--ink-3);
+  user-select: none;
+}
+
+/* ── Panel collapse transition ────────────────── */
+.panel-transition {
+  transition: width 0.22s cubic-bezier(0.4, 0, 0.2, 1);
+  overflow: hidden;
+}
+
+/* ── Skeleton ─────────────────────────────────── */
+@keyframes shimmer {
+  0%   { background-position: -600px 0; }
+  100% { background-position: 600px 0; }
+}
+.skeleton {
+  background: linear-gradient(90deg, #EDEDEA 0%, #E2E2DE 50%, #EDEDEA 100%);
+  background-size: 1200px 100%;
+  animation: shimmer 1.5s ease-in-out infinite;
+}
+
+/* ── Button / input resets ─────────────────────── */
+button { background: none; border: none; cursor: pointer; font-family: inherit; color: inherit; }
+input  { background: none; border: none; outline: none; font-family: inherit; color: inherit; }
+
+/* ── TipTap editorial ─────────────────────────── */
+.tiptap { outline: none; font-family: 'Inter', sans-serif; font-size: 16px; line-height: 1.85; color: var(--ink); }
+.tiptap > * + * { margin-top: 1em; }
+.tiptap h1 {
+  font-family: 'Playfair Display', Georgia, serif;
+  font-size: 2.1em; font-weight: 700; line-height: 1.2;
+  letter-spacing: -0.02em; color: var(--ink); margin-bottom: 0.3em;
+}
+.tiptap h2 {
+  font-family: 'Playfair Display', Georgia, serif;
+  font-size: 1.45em; font-weight: 700; line-height: 1.28;
+  letter-spacing: -0.015em; color: var(--ink); margin-bottom: 0.25em;
+}
+.tiptap h3 { font-size: 1.05em; font-weight: 600; color: var(--ink); }
+.tiptap strong { font-weight: 650; }
+.tiptap em { color: var(--ink-2); font-style: italic; }
+.tiptap blockquote {
+  border-left: 3px solid var(--accent);
+  padding-left: 1.2em;
+  color: var(--ink-2);
+  font-style: italic;
+  font-size: 1.05em;
+  line-height: 1.7;
+}
+.tiptap code {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 0.8em;
+  background: #EEEEED;
+  border: 1px solid var(--rule);
+  padding: 0.1em 0.4em;
+  color: var(--accent);
+}
+.tiptap ul { list-style: disc; padding-left: 1.5em; }
+.tiptap ol { list-style: decimal; padding-left: 1.5em; }
+.tiptap li + li { margin-top: 0.3em; }
+.tiptap p.is-editor-empty:first-child::before {
+  content: attr(data-placeholder);
+  color: var(--ink-4);
+  pointer-events: none;
+  float: left; height: 0;
+  font-family: 'Playfair Display', Georgia, serif;
+  font-style: italic; font-size: 1.1em;
 }

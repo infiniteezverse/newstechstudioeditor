@@ -1,0 +1,262 @@
+"use client";
+
+import { useState } from "react";
+import { RotateCw, ArrowUpRight, ChevronLeft } from "lucide-react";
+import { MOCK_ARTICLES, type Article } from "@/lib/mock-data";
+
+const SENTIMENT = {
+  bullish: { label: "Bullish", color: "var(--bull)" },
+  bearish: { label: "Bearish", color: "var(--bear)" },
+  neutral: { label: "Neutral", color: "var(--ink-3)" },
+};
+
+const FILTERS = ["All", "DeFi", "Layer2", "AI", "Regulation", "Markets"] as const;
+
+interface NewsFeedProps {
+  onGenerateTake: (a: Article) => void;
+  selectedIds: Set<string>;
+  onToggleSelect: (id: string) => void;
+  onCollapse: () => void;
+}
+
+export default function NewsFeed({
+  onGenerateTake, selectedIds, onToggleSelect, onCollapse,
+}: NewsFeedProps) {
+  const [filter, setFilter] = useState<typeof FILTERS[number]>("All");
+  const [spinning, setSpinning] = useState(false);
+
+  const articles = filter === "All"
+    ? MOCK_ARTICLES
+    : MOCK_ARTICLES.filter(a => a.category === filter);
+
+  return (
+    <div className="flex flex-col h-full" style={{ background: "var(--panel-feed)" }}>
+
+      {/* ── Panel header ─────────────────────────── */}
+      <div
+        style={{
+          borderBottom: "2px solid var(--accent)",
+          background: "var(--panel-feed)",
+          padding: "14px 18px 12px",
+          flexShrink: 0,
+        }}
+      >
+        <div className="flex items-start justify-between">
+          <div>
+            <p className="kicker" style={{ marginBottom: "4px", color: "var(--accent)" }}>Wire Feed</p>
+            <div className="flex items-center gap-2">
+              <span
+                style={{
+                  display: "inline-block", width: "6px", height: "6px",
+                  borderRadius: "50%", background: "#0F5C2E", flexShrink: 0,
+                }}
+              />
+              <span className="mono" style={{ fontSize: "9px", color: "var(--ink-3)" }}>
+                LIVE · cryptonewsorg.com
+              </span>
+            </div>
+          </div>
+          <div className="flex items-center gap-2">
+            <button
+              onClick={() => { setSpinning(true); setTimeout(() => setSpinning(false), 600); }}
+              style={{ color: "var(--ink-4)", padding: "4px" }}
+              onMouseEnter={e => (e.currentTarget.style.color = "var(--ink)")}
+              onMouseLeave={e => (e.currentTarget.style.color = "var(--ink-4)")}
+            >
+              <RotateCw size={12} className={spinning ? "animate-spin" : ""} />
+            </button>
+            <button
+              onClick={onCollapse}
+              style={{ color: "var(--ink-4)", padding: "4px" }}
+              title="Collapse panel"
+              onMouseEnter={e => (e.currentTarget.style.color = "var(--ink)")}
+              onMouseLeave={e => (e.currentTarget.style.color = "var(--ink-4)")}
+            >
+              <ChevronLeft size={14} />
+            </button>
+          </div>
+        </div>
+
+        {/* Dispatch count */}
+        <div className="mono" style={{ fontSize: "9px", color: "var(--ink-4)", marginTop: "8px" }}>
+          {articles.length} DISPATCHES TODAY
+        </div>
+      </div>
+
+      {/* ── Multi-select bar ─────────────────────── */}
+      {selectedIds.size > 0 && (
+        <div
+          className="flex items-center justify-between px-4 py-2.5"
+          style={{ background: "var(--accent)", flexShrink: 0 }}
+        >
+          <span className="mono" style={{ fontSize: "9px", color: "rgba(255,255,255,0.7)", letterSpacing: "0.1em" }}>
+            {selectedIds.size} SELECTED FOR SYNTHESIS
+          </span>
+          <button
+            className="mono"
+            style={{ fontSize: "9px", color: "white", letterSpacing: "0.08em", textDecoration: "underline" }}
+          >
+            SYNTHESIZE ALL →
+          </button>
+        </div>
+      )}
+
+      {/* ── Section filters ──────────────────────── */}
+      <div
+        className="flex overflow-x-auto"
+        style={{
+          borderBottom: "1px solid var(--rule)",
+          background: "var(--panel-feed)",
+          flexShrink: 0,
+          gap: 0,
+        }}
+      >
+        {FILTERS.map(f => (
+          <button
+            key={f}
+            onClick={() => setFilter(f)}
+            className="mono shrink-0 px-3 py-2.5"
+            style={{
+              fontSize: "9px",
+              letterSpacing: "0.1em",
+              color: filter === f ? "var(--accent)" : "var(--ink-3)",
+              borderBottom: filter === f ? "2px solid var(--accent)" : "2px solid transparent",
+              marginBottom: "-1px",
+              background: "transparent",
+            }}
+          >
+            {f.toUpperCase()}
+          </button>
+        ))}
+      </div>
+
+      {/* ── Article list ─────────────────────────── */}
+      <div className="flex-1 overflow-y-auto">
+        {articles.map((article, i) => {
+          const sent = SENTIMENT[article.sentiment];
+          const isSelected = selectedIds.has(article.id);
+
+          return (
+            <article
+              key={article.id}
+              style={{
+                borderBottom: "1px solid var(--rule)",
+                background: isSelected ? "#F0F4FB" : "transparent",
+                borderLeft: isSelected ? "3px solid var(--accent)" : "3px solid transparent",
+                transition: "background 0.1s",
+              }}
+            >
+              <div style={{ padding: "16px 18px" }}>
+
+                {/* Category + sentiment row */}
+                <div className="flex items-center justify-between" style={{ marginBottom: "8px" }}>
+                  <div className="flex items-center gap-2">
+                    <span className="kicker" style={{ color: "var(--accent)", fontSize: "8.5px" }}>
+                      {article.category}
+                    </span>
+                    {article.trending && (
+                      <span className="mono" style={{ fontSize: "8px", color: "var(--ink-3)" }}>
+                        ↑ TRENDING
+                      </span>
+                    )}
+                  </div>
+                  <span className="mono" style={{ fontSize: "8.5px", color: sent.color, fontWeight: 500 }}>
+                    {sent.label.toUpperCase()}
+                  </span>
+                </div>
+
+                {/* Headline */}
+                <h2
+                  className="serif"
+                  style={{
+                    fontSize: "15px",
+                    fontWeight: 700,
+                    lineHeight: 1.3,
+                    color: "var(--ink)",
+                    letterSpacing: "-0.01em",
+                    marginBottom: "8px",
+                    cursor: "pointer",
+                  }}
+                  onMouseEnter={e => (e.currentTarget.style.color = "var(--accent)")}
+                  onMouseLeave={e => (e.currentTarget.style.color = "var(--ink)")}
+                >
+                  {article.title}
+                </h2>
+
+                {/* Dek */}
+                <p
+                  style={{
+                    fontSize: "12.5px",
+                    color: "var(--ink-2)",
+                    lineHeight: 1.6,
+                    marginBottom: "12px",
+                    display: "-webkit-box",
+                    WebkitLineClamp: 2,
+                    WebkitBoxOrient: "vertical",
+                    overflow: "hidden",
+                  }}
+                >
+                  {article.summary}
+                </p>
+
+                {/* Footer row */}
+                <div className="flex items-center" style={{ gap: "10px" }}>
+                  <label className="flex items-center gap-1.5" style={{ cursor: "pointer" }}>
+                    <input
+                      type="checkbox"
+                      checked={isSelected}
+                      onChange={() => onToggleSelect(article.id)}
+                      style={{ accentColor: "var(--accent)", width: "11px", height: "11px" }}
+                    />
+                    <span className="mono" style={{ fontSize: "8px", color: "var(--ink-4)", letterSpacing: "0.08em" }}>
+                      SELECT
+                    </span>
+                  </label>
+
+                  <span className="mono" style={{ fontSize: "9px", color: "var(--ink-4)" }}>
+                    {new Date(article.timestamp).toLocaleTimeString("en-US", { hour: "2-digit", minute: "2-digit" })}
+                    &nbsp;·&nbsp;{article.readTime} min
+                  </span>
+
+                  <div className="flex items-center gap-1" style={{ marginLeft: "auto" }}>
+                    <button
+                      style={{ color: "var(--ink-4)", padding: "3px" }}
+                      onMouseEnter={e => (e.currentTarget.style.color = "var(--ink)")}
+                      onMouseLeave={e => (e.currentTarget.style.color = "var(--ink-4)")}
+                    >
+                      <ArrowUpRight size={11} />
+                    </button>
+                    <button
+                      onClick={() => onGenerateTake(article)}
+                      className="mono"
+                      style={{
+                        fontSize: "9px",
+                        letterSpacing: "0.08em",
+                        color: "var(--accent)",
+                        border: "1px solid var(--accent)",
+                        padding: "3px 10px",
+                        background: "transparent",
+                        transition: "all 0.1s",
+                      }}
+                      onMouseEnter={e => {
+                        (e.currentTarget as HTMLElement).style.background = "var(--accent)";
+                        (e.currentTarget as HTMLElement).style.color = "white";
+                      }}
+                      onMouseLeave={e => {
+                        (e.currentTarget as HTMLElement).style.background = "transparent";
+                        (e.currentTarget as HTMLElement).style.color = "var(--accent)";
+                      }}
+                    >
+                      TAKE →
+                    </button>
+                  </div>
+                </div>
+
+              </div>
+            </article>
+          );
+        })}
+      </div>
+    </div>
+  );
+}
