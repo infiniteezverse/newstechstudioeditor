@@ -126,8 +126,8 @@ export default function AITakePanel({ sourceArticle, onPushToEditor, onCollapse 
       >
         <div className="flex items-start justify-between">
           <div>
-            <p className="kicker" style={{ marginBottom: "4px", color: "var(--ink-2)" }}>AI Synthesis</p>
-            <span className="mono" style={{ fontSize: "9px", color: "var(--ink-4)" }}>
+            <p className="kicker" style={{ marginBottom: "4px", color: "var(--accent)", fontSize: "11px", letterSpacing: "0.1em" }}>AI Synthesis</p>
+            <span className="mono" style={{ fontSize: "10px", color: "var(--ink-3)", fontWeight: 500 }}>
               MASTER SCHEMA v1.0
             </span>
           </div>
@@ -226,23 +226,26 @@ export default function AITakePanel({ sourceArticle, onPushToEditor, onCollapse 
 
         {/* Persona */}
         <div style={{ padding: "16px 18px", borderBottom: "1px solid var(--rule)" }}>
-          <p className="kicker" style={{ marginBottom: "10px" }}>Voice Persona</p>
-          <div className="flex flex-wrap" style={{ gap: "6px" }}>
+          <p className="kicker" style={{ marginBottom: "10px", fontSize: "10px", letterSpacing: "0.1em", color: "var(--ink-2)" }}>Voice Persona</p>
+          <div className="flex flex-wrap" style={{ gap: "7px" }}>
             {PERSONAS.map(p => (
               <button
                 key={p}
                 onClick={() => setPersona(p)}
                 className="mono"
                 style={{
-                  fontSize: "9px",
-                  letterSpacing: "0.08em",
-                  padding: "5px 12px",
+                  fontSize: "10.5px",
+                  letterSpacing: "0.07em",
+                  fontWeight: persona === p ? 600 : 400,
+                  padding: "6px 14px",
                   border: "1px solid",
                   borderColor: persona === p ? "var(--accent)" : "var(--rule-heavy)",
-                  color: persona === p ? "white" : "var(--ink-2)",
+                  color: persona === p ? "white" : "var(--ink)",
                   background: persona === p ? "var(--accent)" : "transparent",
-                  transition: "all 0.1s",
+                  transition: "all 0.12s",
                 }}
+                onMouseEnter={e => { if (persona !== p) { (e.currentTarget as HTMLElement).style.borderColor = "var(--accent)"; (e.currentTarget as HTMLElement).style.color = "var(--accent)"; } }}
+                onMouseLeave={e => { if (persona !== p) { (e.currentTarget as HTMLElement).style.borderColor = "var(--rule-heavy)"; (e.currentTarget as HTMLElement).style.color = "var(--ink)"; } }}
               >
                 {p.toUpperCase()}
               </button>

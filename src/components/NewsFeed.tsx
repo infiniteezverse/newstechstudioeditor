@@ -99,18 +99,18 @@ export default function NewsFeed({
       >
         <div className="flex items-start justify-between">
           <div>
-            <p className="kicker" style={{ marginBottom: "4px", color: "var(--accent)" }}>Wire Feed</p>
+            <p className="kicker" style={{ marginBottom: "5px", color: "var(--accent)", fontSize: "11px", letterSpacing: "0.1em" }}>Wire Feed</p>
             <div className="flex items-center gap-2">
-              <span style={{ width: "6px", height: "6px", borderRadius: "50%", background: "#0F5C2E", display: "inline-block", flexShrink: 0 }} />
-              <span className="mono" style={{ fontSize: "9px", color: "var(--ink-3)", letterSpacing: "0.07em" }}>
+              <span style={{ width: "7px", height: "7px", borderRadius: "50%", background: "#0F5C2E", display: "inline-block", flexShrink: 0 }} />
+              <span className="mono" style={{ fontSize: "10px", color: "var(--ink-2)", letterSpacing: "0.06em", fontWeight: 500 }}>
                 LIVE ·{" "}
                 <a
                   href="https://cryptonewsorg.com"
                   target="_blank"
                   rel="noopener noreferrer"
-                  style={{ color: "var(--ink-2)", textDecoration: "underline", textUnderlineOffset: "2px" }}
+                  style={{ color: "var(--ink)", textDecoration: "underline", textUnderlineOffset: "2px", fontWeight: 600 }}
                   onMouseEnter={e => (e.currentTarget.style.color = "var(--accent)")}
-                  onMouseLeave={e => (e.currentTarget.style.color = "var(--ink-2)")}
+                  onMouseLeave={e => (e.currentTarget.style.color = "var(--ink)")}
                 >
                   cryptonewsorg.com
                 </a>
@@ -141,7 +141,7 @@ export default function NewsFeed({
         </div>
 
         <div className="flex items-center gap-3" style={{ marginTop: "8px" }}>
-          <span className="mono" style={{ fontSize: "9px", color: "var(--ink-4)" }}>
+          <span className="mono" style={{ fontSize: "10.5px", color: "var(--ink-2)", fontWeight: 500, letterSpacing: "0.05em" }}>
             {displayed.length} DISPATCHES
           </span>
           {pinnedCount > 0 && (
@@ -182,15 +182,19 @@ export default function NewsFeed({
             onClick={() => setFilter(f)}
             className="mono shrink-0"
             style={{
-              fontSize: "9px",
-              letterSpacing: "0.08em",
-              padding: "9px 10px",
-              color: filter === f ? "var(--accent)" : "var(--ink-3)",
+              fontSize: "10px",
+              letterSpacing: "0.07em",
+              padding: "10px 11px",
+              color: filter === f ? "var(--accent)" : "var(--ink-2)",
+              fontWeight: filter === f ? 600 : 400,
               borderBottom: filter === f ? "2px solid var(--accent)" : "2px solid transparent",
               marginBottom: "-1px",
               background: "transparent",
               whiteSpace: "nowrap",
+              transition: "color 0.12s",
             }}
+            onMouseEnter={e => { if (filter !== f) (e.currentTarget as HTMLElement).style.color = "var(--ink)"; }}
+            onMouseLeave={e => { if (filter !== f) (e.currentTarget as HTMLElement).style.color = "var(--ink-2)"; }}
           >
             {f.toUpperCase()}
           </button>
@@ -304,14 +308,14 @@ export default function NewsFeed({
                         type="checkbox"
                         checked={isSelected}
                         onChange={() => onToggleSelect(article.id)}
-                        style={{ accentColor: "var(--accent)", width: "11px", height: "11px" }}
+                        style={{ accentColor: "var(--accent)", width: "12px", height: "12px" }}
                       />
-                      <span className="mono" style={{ fontSize: "8px", color: "var(--ink-4)", letterSpacing: "0.08em" }}>
+                      <span className="mono" style={{ fontSize: "9.5px", color: "var(--ink-2)", letterSpacing: "0.07em", fontWeight: 500 }}>
                         SELECT
                       </span>
                     </label>
 
-                    <span className="mono" style={{ fontSize: "9px", color: "var(--ink-4)" }}>
+                    <span className="mono" style={{ fontSize: "10px", color: "var(--ink-3)" }}>
                       {new Date(article.timestamp).toLocaleTimeString("en-US", { hour: "2-digit", minute: "2-digit" })}
                       &nbsp;·&nbsp;{article.readTime} min
                     </span>
@@ -346,7 +350,7 @@ export default function NewsFeed({
                         onMouseEnter={e => { if (!isPinned) (e.currentTarget as HTMLElement).style.color = "var(--accent)"; }}
                         onMouseLeave={e => { if (!isPinned) (e.currentTarget as HTMLElement).style.color = "var(--ink-4)"; }}
                       >
-                        {isPinned ? <PinOff size={11} /> : <Pin size={11} />}
+                        {isPinned ? <PinOff size={13} /> : <Pin size={13} />}
                       </button>
 
                       {/* Take button */}
@@ -354,11 +358,12 @@ export default function NewsFeed({
                         onClick={() => onGenerateTake(article)}
                         className="mono"
                         style={{
-                          fontSize: "9px",
-                          letterSpacing: "0.08em",
+                          fontSize: "10px",
+                          letterSpacing: "0.07em",
+                          fontWeight: 600,
                           color: "var(--accent)",
                           border: "1px solid var(--accent)",
-                          padding: "3px 10px",
+                          padding: "4px 12px",
                           background: "transparent",
                           transition: "all 0.1s",
                         }}
