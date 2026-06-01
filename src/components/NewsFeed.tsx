@@ -100,22 +100,6 @@ export default function NewsFeed({
         <div className="flex items-start justify-between">
           <div>
             <p className="kicker" style={{ marginBottom: "5px", color: "var(--accent)", fontSize: "11px", letterSpacing: "0.1em" }}>Wire Feed</p>
-            <div className="flex items-center gap-2">
-              <span style={{ width: "7px", height: "7px", borderRadius: "50%", background: "#0F5C2E", display: "inline-block", flexShrink: 0 }} />
-              <span className="mono" style={{ fontSize: "10px", color: "var(--ink-2)", letterSpacing: "0.06em", fontWeight: 500 }}>
-                LIVE ·{" "}
-                <a
-                  href="https://cryptonewsorg.com"
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  style={{ color: "var(--ink)", textDecoration: "underline", textUnderlineOffset: "2px", fontWeight: 600 }}
-                  onMouseEnter={e => (e.currentTarget.style.color = "var(--accent)")}
-                  onMouseLeave={e => (e.currentTarget.style.color = "var(--ink)")}
-                >
-                  cryptonewsorg.com
-                </a>
-              </span>
-            </div>
           </div>
 
           <div className="flex items-center gap-1">

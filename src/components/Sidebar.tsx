@@ -70,16 +70,16 @@ export default function Sidebar({ activeView, onViewChange, onSectionClick }: Si
       {!collapsed && (
         <div
           className="flex items-center gap-2"
-          style={{ padding: "7px 16px", borderBottom: "1px solid var(--rule-heavy)", background: "#F5F5F2", flexShrink: 0 }}
+          style={{ padding: "9px 16px", borderBottom: "1px solid var(--rule-heavy)", background: "#F5F5F2", flexShrink: 0 }}
         >
-          <span style={{ width: "6px", height: "6px", borderRadius: "50%", background: "#0F5C2E", flexShrink: 0, display: "inline-block" }} />
-          <span className="mono" style={{ fontSize: "9px", color: "var(--ink-2)", letterSpacing: "0.08em" }}>
+          <span style={{ width: "8px", height: "8px", borderRadius: "50%", background: "#0F5C2E", flexShrink: 0, display: "inline-block" }} />
+          <span className="mono" style={{ fontSize: "11px", color: "var(--ink-2)", letterSpacing: "0.07em", fontWeight: 500 }}>
             LIVE ·{" "}
             <a
               href="https://cryptonewsorg.com"
               target="_blank"
               rel="noopener noreferrer"
-              style={{ color: "var(--ink)", textDecoration: "underline", textUnderlineOffset: "2px", fontWeight: 500 }}
+              style={{ color: "var(--ink)", textDecoration: "underline", textUnderlineOffset: "2px", fontWeight: 700 }}
               onMouseEnter={e => (e.currentTarget.style.color = "var(--accent)")}
               onMouseLeave={e => (e.currentTarget.style.color = "var(--ink)")}
             >
