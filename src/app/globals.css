@@ -10,14 +10,14 @@
   --panel-editor:#FDFCFA;   /* editor — near-white writing surface */
 
   /* ── Text ──────────────────────────────────── */
-  --ink:   #0E0E12;
-  --ink-2: #4A4A58;
-  --ink-3: #8A8A98;
-  --ink-4: #BBBBC6;
+  --ink:   #0A0A0D;
+  --ink-2: #2E2E3A;
+  --ink-3: #6B6B7A;
+  --ink-4: #ABABBA;
 
   /* ── Structure ─────────────────────────────── */
-  --rule:       #E4E4EA;
-  --rule-heavy: #CACAD4;
+  --rule:       #DDDDE4;
+  --rule-heavy: #BBBBC8;
 
   /* ── Accent — deep navy ─────────────────────── */
   --accent:   #0A1931;
@@ -35,7 +35,7 @@ html, body {
   background: var(--canvas) !important;
   color: var(--ink);
   font-family: 'Inter', system-ui, -apple-system, sans-serif;
-  font-size: 13px;
+  font-size: 13.5px;
   line-height: 1.5;
   height: 100%;
   overflow: hidden;
