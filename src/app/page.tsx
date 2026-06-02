@@ -135,6 +135,7 @@ export default function Home() {
             setSearchResults([]);
           }}
           onAddArticle={handleAddArticle}
+          onQueryChange={searchArticles}
         />
 
         <div className="flex flex-1 min-h-0 overflow-hidden">

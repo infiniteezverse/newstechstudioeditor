@@ -8,9 +8,10 @@ interface SearchResultsProps {
   results: Article[];
   onClose: () => void;
   onAddArticle: (article: Article) => void;
+  onQueryChange?: (newQuery: string) => void;
 }
 
-export default function SearchResults({ query, results, onClose, onAddArticle }: SearchResultsProps) {
+export default function SearchResults({ query, results, onClose, onAddArticle, onQueryChange }: SearchResultsProps) {
   if (!query) return null;
 
   return (
@@ -34,47 +35,86 @@ export default function SearchResults({ query, results, onClose, onAddArticle }:
         }}
         onClick={e => e.stopPropagation()}
       >
-        {/* Header */}
+        {/* Header with Search Input */}
         <div
-          className="flex items-center justify-between shrink-0"
           style={{
-            padding: "16px 20px",
+            padding: "12px 16px",
             borderBottom: "1px solid var(--rule)",
-            background: results.length > 0 ? "transparent" : "#F8F8F5",
+            background: "transparent",
           }}
         >
-          <div>
-            <span className="mono" style={{ fontSize: "10px", color: "var(--ink-3)", letterSpacing: "0.1em" }}>
-              SEARCH RESULTS
-            </span>
-            <div className="flex items-center gap-2" style={{ marginTop: "4px" }}>
-              <p style={{ fontSize: "14px", fontWeight: 600, color: "var(--ink)" }}>
-                "{query}"
-              </p>
-              {results.length > 0 && (
-                <span
-                  className="mono"
-                  style={{
-                    fontSize: "11px",
-                    color: "var(--ink-3)",
-                    background: "rgba(10, 25, 49, 0.07)",
-                    padding: "2px 8px",
-                    borderRadius: "2px",
-                  }}
-                >
-                  {results.length} match{results.length !== 1 ? "es" : ""}
-                </span>
-              )}
-            </div>
+          <div className="flex items-center gap-2">
+            <SearchIcon size={16} style={{ color: "var(--accent)", flexShrink: 0 }} />
+            <input
+              type="text"
+              value={query}
+              onChange={e => onQueryChange?.(e.target.value)}
+              style={{
+                flex: 1,
+                fontSize: "14px",
+                fontWeight: 500,
+                color: "var(--ink)",
+                background: "transparent",
+                border: "none",
+                outline: "none",
+              }}
+              placeholder="Type to search..."
+              autoFocus
+            />
+            {query && (
+              <button
+                onClick={() => onQueryChange?.("")}
+                style={{
+                  color: "var(--ink-3)",
+                  padding: "4px",
+                  flexShrink: 0,
+                  background: "transparent",
+                  border: "none",
+                  cursor: "pointer",
+                }}
+                onMouseEnter={e => (e.currentTarget.style.color = "var(--ink)")}
+                onMouseLeave={e => (e.currentTarget.style.color = "var(--ink-3)")}
+              >
+                <X size={16} />
+              </button>
+            )}
+            <button
+              onClick={onClose}
+              style={{
+                color: "var(--ink-3)",
+                padding: "4px",
+                flexShrink: 0,
+                background: "transparent",
+                border: "none",
+                cursor: "pointer",
+              }}
+              onMouseEnter={e => (e.currentTarget.style.color = "var(--ink)")}
+              onMouseLeave={e => (e.currentTarget.style.color = "var(--ink-3)")}
+              title="Close search"
+            >
+              <X size={16} />
+            </button>
           </div>
-          <button
-            onClick={onClose}
-            style={{ color: "var(--ink-3)", padding: "4px", flexShrink: 0 }}
-            onMouseEnter={e => (e.currentTarget.style.color = "var(--ink)")}
-            onMouseLeave={e => (e.currentTarget.style.color = "var(--ink-3)")}
-          >
-            <X size={16} />
-          </button>
+
+          {/* Result count */}
+          {results.length > 0 && (
+            <div style={{ marginTop: "8px" }}>
+              <span
+                className="mono"
+                style={{
+                  fontSize: "10px",
+                  color: "var(--ink-3)",
+                  background: "rgba(10, 25, 49, 0.07)",
+                  padding: "2px 8px",
+                  borderRadius: "2px",
+                  display: "inline-block",
+                  letterSpacing: "0.05em",
+                }}
+              >
+                {results.length} match{results.length !== 1 ? "es" : ""}
+              </span>
+            </div>
+          )}
         </div>
 
         {/* Results */}
