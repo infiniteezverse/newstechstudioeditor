@@ -3,13 +3,27 @@
 import { Send, CheckCircle, Clock, AlertCircle } from "lucide-react";
 
 const CHANNELS = [
-  { id: "twitter",   label: "𝕏 Twitter",   connected: true,  followers: "12.4K", lastPost: "2h ago" },
-  { id: "farcaster", label: "Farcaster",   connected: true,  followers: "3.1K",  lastPost: "5h ago" },
-  { id: "linkedin",  label: "LinkedIn",    connected: false, followers: "—",     lastPost: "—" },
-  { id: "lens",      label: "Lens",        connected: false, followers: "—",     lastPost: "—" },
-  { id: "mirror",    label: "Mirror",      connected: false, followers: "—",     lastPost: "—" },
-  { id: "medium",    label: "Medium",      connected: false, followers: "—",     lastPost: "—" },
-  { id: "substack",  label: "Substack",    connected: false, followers: "—",     lastPost: "—" },
+  // Social & Community
+  { id: "twitter",    label: "𝕏 Twitter",       connected: true,  followers: "12.4K", lastPost: "2h ago", category: "Social" },
+  { id: "farcaster",  label: "Farcaster",       connected: true,  followers: "3.1K",  lastPost: "5h ago", category: "Social" },
+  { id: "linkedin",   label: "LinkedIn",        connected: false, followers: "—",     lastPost: "—",      category: "Social" },
+  { id: "reddit",     label: "Reddit",          connected: false, followers: "—",     lastPost: "—",      category: "Community" },
+
+  // Content Platforms
+  { id: "medium",     label: "Medium",          connected: false, followers: "—",     lastPost: "—",      category: "Content" },
+  { id: "substack",   label: "Substack",        connected: false, followers: "—",     lastPost: "—",      category: "Content" },
+  { id: "beehiiv",    label: "beehiiv",         connected: false, followers: "—",     lastPost: "—",      category: "Content" },
+  { id: "ghost",      label: "Ghost",           connected: false, followers: "—",     lastPost: "—",      category: "Content" },
+
+  // Developer/Technical
+  { id: "devto",      label: "Dev.to",          connected: false, followers: "—",     lastPost: "—",      category: "Developer" },
+  { id: "hashnode",   label: "Hashnode",        connected: false, followers: "—",     lastPost: "—",      category: "Developer" },
+  { id: "lens",       label: "Lens",            connected: false, followers: "—",     lastPost: "—",      category: "Web3" },
+  { id: "mirror",     label: "Mirror",          connected: false, followers: "—",     lastPost: "—",      category: "Web3" },
+
+  // Automation & Syndication
+  { id: "make",       label: "Make.com",        connected: false, followers: "—",     lastPost: "—",      category: "Automation" },
+  { id: "rss",        label: "RSS Feed",        connected: false, followers: "—",     lastPost: "—",      category: "Syndication" },
 ];
 
 const QUEUE = [
@@ -48,60 +62,84 @@ export default function DistributionHub() {
 
         {/* ── Channels ── */}
         <div style={{ marginBottom: "36px" }}>
-          <p className="kicker" style={{ marginBottom: "12px" }}>Connected Channels</p>
-          <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fill, minmax(220px, 1fr))", gap: "8px" }}>
-            {CHANNELS.map(ch => (
-              <div
-                key={ch.id}
-                style={{
-                  background: "white",
-                  border: `1px solid ${ch.connected ? "var(--rule)" : "var(--rule)"}`,
-                  padding: "14px 16px",
-                  display: "flex",
-                  alignItems: "center",
-                  justifyContent: "space-between",
-                  gap: "10px",
-                  opacity: ch.connected ? 1 : 0.65,
-                }}
-              >
-                <div>
-                  <p style={{ fontSize: "12.5px", fontWeight: 500, color: "var(--ink)", marginBottom: "3px" }}>{ch.label}</p>
-                  {ch.connected ? (
-                    <p className="mono" style={{ fontSize: "9px", color: "var(--ink-3)" }}>
-                      {ch.followers} · {ch.lastPost}
-                    </p>
-                  ) : (
-                    <p className="mono" style={{ fontSize: "9px", color: "var(--ink-4)" }}>Not connected</p>
-                  )}
+          <p className="kicker" style={{ marginBottom: "16px" }}>Distribution Channels</p>
+
+          {/* Group channels by category */}
+          {["Social", "Content", "Developer", "Web3", "Community", "Automation", "Syndication"].map(category => {
+            const categoryChannels = CHANNELS.filter(ch => ch.category === category);
+            if (categoryChannels.length === 0) return null;
+
+            return (
+              <div key={category} style={{ marginBottom: "24px" }}>
+                <p className="mono" style={{ fontSize: "10px", color: "var(--ink-3)", letterSpacing: "0.1em", marginBottom: "8px" }}>
+                  {category.toUpperCase()}
+                </p>
+                <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fill, minmax(240px, 1fr))", gap: "8px" }}>
+                  {categoryChannels.map(ch => (
+                    <div
+                      key={ch.id}
+                      style={{
+                        background: "white",
+                        border: `1px solid ${ch.connected ? "var(--accent-2)" : "var(--rule)"}`,
+                        borderLeft: ch.connected ? "3px solid var(--accent)" : "3px solid transparent",
+                        padding: "14px 16px",
+                        display: "flex",
+                        alignItems: "center",
+                        justifyContent: "space-between",
+                        gap: "10px",
+                        opacity: ch.connected ? 1 : 0.75,
+                        transition: "all 0.12s",
+                      }}
+                      onMouseEnter={e => {
+                        const el = e.currentTarget as HTMLElement;
+                        if (!ch.connected) el.style.background = "#FAFAF7";
+                      }}
+                      onMouseLeave={e => {
+                        const el = e.currentTarget as HTMLElement;
+                        el.style.background = "white";
+                      }}
+                    >
+                      <div>
+                        <p style={{ fontSize: "12.5px", fontWeight: 500, color: "var(--ink)", marginBottom: "3px" }}>{ch.label}</p>
+                        {ch.connected ? (
+                          <p className="mono" style={{ fontSize: "9px", color: "var(--ink-3)" }}>
+                            {ch.followers} · {ch.lastPost}
+                          </p>
+                        ) : (
+                          <p className="mono" style={{ fontSize: "9px", color: "var(--ink-4)" }}>Not connected</p>
+                        )}
+                      </div>
+                      <button
+                        className="mono shrink-0"
+                        style={{
+                          fontSize: "8px",
+                          padding: "5px 10px",
+                          letterSpacing: "0.07em",
+                          fontWeight: 600,
+                          background: ch.connected ? "transparent" : "var(--accent)",
+                          color: ch.connected ? "var(--accent)" : "white",
+                          border: ch.connected ? "1px solid var(--accent)" : "none",
+                          borderRadius: "2px",
+                        }}
+                        onMouseEnter={e => {
+                          const el = e.currentTarget as HTMLElement;
+                          el.style.background = "var(--accent)";
+                          el.style.color = "white";
+                        }}
+                        onMouseLeave={e => {
+                          const el = e.currentTarget as HTMLElement;
+                          el.style.background = ch.connected ? "transparent" : "var(--accent)";
+                          el.style.color = ch.connected ? "var(--accent)" : "white";
+                        }}
+                      >
+                        {ch.connected ? "MANAGE" : "CONNECT"}
+                      </button>
+                    </div>
+                  ))}
                 </div>
-                <button
-                  className="mono shrink-0"
-                  style={{
-                    fontSize: "8px",
-                    padding: "4px 9px",
-                    letterSpacing: "0.07em",
-                    background: ch.connected ? "transparent" : "var(--accent)",
-                    color: ch.connected ? "var(--ink-3)" : "white",
-                    border: ch.connected ? "1px solid var(--rule-heavy)" : "none",
-                  }}
-                  onMouseEnter={e => {
-                    const el = e.currentTarget as HTMLElement;
-                    el.style.background = "var(--accent)";
-                    el.style.color = "white";
-                    el.style.borderColor = "var(--accent)";
-                  }}
-                  onMouseLeave={e => {
-                    const el = e.currentTarget as HTMLElement;
-                    el.style.background = ch.connected ? "transparent" : "var(--accent)";
-                    el.style.color = ch.connected ? "var(--ink-3)" : "white";
-                    el.style.borderColor = ch.connected ? "var(--rule-heavy)" : "transparent";
-                  }}
-                >
-                  {ch.connected ? "MANAGE" : "CONNECT"}
-                </button>
               </div>
-            ))}
-          </div>
+            );
+          })}
         </div>
 
         {/* ── Publish Queue ── */}
