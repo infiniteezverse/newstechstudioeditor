@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useCallback, useRef } from "react";
 import Sidebar from "@/components/Sidebar";
 import Topbar from "@/components/Topbar";
 import NewsFeed from "@/components/NewsFeed";
@@ -11,15 +11,19 @@ import DistributionHub from "@/components/DistributionHub";
 import SettingsPanel from "@/components/SettingsPanel";
 import type { Article } from "@/lib/mock-data";
 
-// Section nav labels map to Wire Feed filter values
 const SECTION_TO_FILTER: Record<string, string> = {
-  "Layer 2":       "Layer2",
-  "AI & LLMs":     "AI",
-  "DeFi":          "DeFi",
-  "Regulation":    "Regulation",
-  "Markets":       "Markets",
-  "Infrastructure":"Infrastructure",
+  "Layer 2":        "Layer2",
+  "AI & LLMs":      "AI",
+  "DeFi":           "DeFi",
+  "Regulation":     "Regulation",
+  "Markets":        "Markets",
+  "Infrastructure": "Infrastructure",
 };
+
+// Default widths: feed +7.5%, ai +7.5% vs old 340/320
+const DEFAULT_FEED_W = 365;
+const DEFAULT_AI_W   = 344;
+const MIN_PANEL_W    = 220;
 
 export default function Home() {
   const [activeView, setActiveView]         = useState("studio");
@@ -28,10 +32,42 @@ export default function Home() {
   const [selectedIds, setSelectedIds]       = useState<Set<string>>(new Set());
   const [editorContent, setEditorContent]   = useState("");
   const [pinnedArticles, setPinnedArticles] = useState<Article[]>([]);
+  const [feedOpen, setFeedOpen]             = useState(true);
+  const [aiOpen, setAiOpen]                 = useState(true);
+  const [feedW, setFeedW]                   = useState(DEFAULT_FEED_W);
+  const [aiW, setAiW]                       = useState(DEFAULT_AI_W);
 
-  // Panel open/closed state
-  const [feedOpen, setFeedOpen] = useState(true);
-  const [aiOpen, setAiOpen]     = useState(true);
+  // Drag state refs — avoid re-renders during drag
+  const dragging   = useRef<"feed" | "ai" | null>(null);
+  const dragStartX = useRef(0);
+  const dragStartW = useRef(0);
+
+  const startDrag = useCallback((handle: "feed" | "ai", e: React.MouseEvent) => {
+    e.preventDefault();
+    dragging.current   = handle;
+    dragStartX.current = e.clientX;
+    dragStartW.current = handle === "feed" ? feedW : aiW;
+    document.body.style.cursor    = "col-resize";
+    document.body.style.userSelect = "none";
+
+    function onMove(ev: MouseEvent) {
+      const delta = ev.clientX - dragStartX.current;
+      const next  = Math.max(MIN_PANEL_W, dragStartW.current + delta);
+      if (dragging.current === "feed") setFeedW(next);
+      else setAiW(next);
+    }
+
+    function onUp() {
+      dragging.current = null;
+      document.body.style.cursor    = "";
+      document.body.style.userSelect = "";
+      window.removeEventListener("mousemove", onMove);
+      window.removeEventListener("mouseup",   onUp);
+    }
+
+    window.addEventListener("mousemove", onMove);
+    window.addEventListener("mouseup",   onUp);
+  }, [feedW, aiW]);
 
   function handleToggleSelect(id: string) {
     setSelectedIds(prev => {
@@ -43,10 +79,7 @@ export default function Home() {
 
   function handleSectionClick(section: string) {
     const filter = SECTION_TO_FILTER[section];
-    if (filter) {
-      setSectionFilter(filter);
-      setActiveView("feed");
-    }
+    if (filter) { setSectionFilter(filter); setActiveView("feed"); }
   }
 
   function handleViewChange(v: string) {
@@ -58,11 +91,7 @@ export default function Home() {
 
   return (
     <div className="flex h-full" style={{ background: "var(--canvas)" }}>
-      <Sidebar
-        activeView={activeView}
-        onViewChange={handleViewChange}
-        onSectionClick={handleSectionClick}
-      />
+      <Sidebar activeView={activeView} onViewChange={handleViewChange} onSectionClick={handleSectionClick} />
 
       <div className="flex flex-col flex-1 min-w-0 h-full">
         <Topbar />
@@ -73,11 +102,12 @@ export default function Home() {
             <>
               {/* ── Wire Feed panel ── */}
               <div
-                className="panel-transition flex flex-col h-full shrink-0"
+                className="flex flex-col h-full shrink-0"
                 style={{
-                  width: feedOpen ? "340px" : "44px",
-                  borderRight: "1px solid var(--rule-heavy)",
+                  width: feedOpen ? `${feedW}px` : "44px",
                   background: "var(--panel-feed)",
+                  transition: feedOpen ? "none" : "width 0.22s cubic-bezier(0.4,0,0.2,1)",
+                  overflow: "hidden",
                 }}
               >
                 {feedOpen ? (
@@ -90,22 +120,21 @@ export default function Home() {
                     onPinnedChange={setPinnedArticles}
                   />
                 ) : (
-                  <CollapsedStrip
-                    label="Wire Feed"
-                    badge={6}
-                    color="var(--panel-feed)"
-                    onClick={() => setFeedOpen(true)}
-                  />
+                  <CollapsedStrip label="Wire Feed" badge={6} color="var(--panel-feed)" onClick={() => setFeedOpen(true)} />
                 )}
               </div>
 
+              {/* ── Drag handle: feed ↔ ai ── */}
+              <DragHandle onMouseDown={e => startDrag("feed", e)} />
+
               {/* ── AI Synthesis panel ── */}
               <div
-                className="panel-transition flex flex-col h-full shrink-0"
+                className="flex flex-col h-full shrink-0"
                 style={{
-                  width: aiOpen ? "320px" : "44px",
-                  borderRight: "1px solid var(--rule-heavy)",
+                  width: aiOpen ? `${aiW}px` : "44px",
                   background: "var(--panel-ai)",
+                  transition: aiOpen ? "none" : "width 0.22s cubic-bezier(0.4,0,0.2,1)",
+                  overflow: "hidden",
                 }}
               >
                 {aiOpen ? (
@@ -115,13 +144,12 @@ export default function Home() {
                     onCollapse={() => setAiOpen(false)}
                   />
                 ) : (
-                  <CollapsedStrip
-                    label="AI Synthesis"
-                    color="var(--panel-ai)"
-                    onClick={() => setAiOpen(true)}
-                  />
+                  <CollapsedStrip label="AI Synthesis" color="var(--panel-ai)" onClick={() => setAiOpen(true)} />
                 )}
               </div>
+
+              {/* ── Drag handle: ai ↔ editor ── */}
+              <DragHandle onMouseDown={e => startDrag("ai", e)} />
 
               {/* ── Pro Editor ── */}
               <div className="flex flex-col flex-1 min-w-0 h-full overflow-hidden" style={{ background: "var(--panel-editor)" }}>
@@ -144,13 +172,9 @@ export default function Home() {
               />
             </div>
           ) : activeView === "distribute" ? (
-            <div className="flex-1 min-w-0 h-full overflow-hidden">
-              <DistributionHub />
-            </div>
+            <div className="flex-1 min-w-0 h-full overflow-hidden"><DistributionHub /></div>
           ) : activeView === "settings" ? (
-            <div className="flex-1 min-w-0 h-full overflow-hidden">
-              <SettingsPanel />
-            </div>
+            <div className="flex-1 min-w-0 h-full overflow-hidden"><SettingsPanel /></div>
           ) : null}
 
         </div>
@@ -159,13 +183,28 @@ export default function Home() {
   );
 }
 
-function CollapsedStrip({
-  label, badge, color, onClick,
-}: {
-  label: string;
-  badge?: number;
-  color: string;
-  onClick: () => void;
+function DragHandle({ onMouseDown }: { onMouseDown: (e: React.MouseEvent) => void }) {
+  const [hovered, setHovered] = useState(false);
+  return (
+    <div
+      onMouseDown={onMouseDown}
+      onMouseEnter={() => setHovered(true)}
+      onMouseLeave={() => setHovered(false)}
+      style={{
+        width: "5px",
+        flexShrink: 0,
+        cursor: "col-resize",
+        background: hovered ? "var(--accent)" : "var(--rule-heavy)",
+        transition: "background 0.15s",
+        position: "relative",
+        zIndex: 10,
+      }}
+    />
+  );
+}
+
+function CollapsedStrip({ label, badge, color, onClick }: {
+  label: string; badge?: number; color: string; onClick: () => void;
 }) {
   return (
     <button
