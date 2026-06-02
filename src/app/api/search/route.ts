@@ -91,29 +91,35 @@ function scoreRelevance(article: Article, query: string): number {
   const q = query.toLowerCase();
   let score = 0;
 
+  const queryWords = q.split(/\s+/).filter(w => w.length > 0);
+  const titleWords = article.title.toLowerCase().split(/\W+/).filter(w => w.length > 0);
+  const summaryWords = article.summary.toLowerCase().split(/\W+/).filter(w => w.length > 0);
+
   // Exact phrase match in title = highest priority
   if (article.title.toLowerCase().includes(q)) score += 100;
 
-  // Word matches in title
-  const titleWords = article.title.toLowerCase().split(/\s+/);
-  const queryWords = q.split(/\s+/);
+  // Word-by-word matches in title (exact word boundaries, not substrings)
   queryWords.forEach(word => {
-    if (titleWords.some(tw => tw.includes(word))) score += 50;
+    const exactMatches = titleWords.filter(tw => tw === word).length;
+    score += exactMatches * 50;
   });
 
   // Exact phrase match in summary
   if (article.summary.toLowerCase().includes(q)) score += 30;
 
-  // Word matches in summary
-  const summaryText = article.summary.toLowerCase();
+  // Word-by-word matches in summary
   queryWords.forEach(word => {
-    if (summaryText.includes(word)) score += 15;
+    const exactMatches = summaryWords.filter(sw => sw === word).length;
+    score += exactMatches * 15;
   });
 
-  // Tag matches
+  // Tag matches (exact word match)
   if (article.tags && Array.isArray(article.tags)) {
     article.tags.forEach(tag => {
-      if (tag.toLowerCase().includes(q)) score += 40;
+      if (tag.toLowerCase().split(/\W+/).some(t => t === q)) score += 40;
+      queryWords.forEach(word => {
+        if (tag.toLowerCase() === word) score += 40;
+      });
     });
   }
 

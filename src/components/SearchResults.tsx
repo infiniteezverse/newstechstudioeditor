@@ -1,6 +1,5 @@
 "use client";
 
-import { useState, useEffect } from "react";
 import { X, Plus, Search as SearchIcon } from "lucide-react";
 import type { Article } from "@/lib/mock-data";
 
@@ -9,24 +8,6 @@ interface SearchResultsProps {
   results: Article[];
   onClose: () => void;
   onAddArticle: (article: Article) => void;
-}
-
-function highlightMatch(text: string, query: string): React.ReactNode {
-  if (!query) return text;
-
-  const queryWords = query.toLowerCase().split(/\s+/).filter(w => w);
-  const regex = new RegExp(`(${queryWords.join("|")})`, "gi");
-  const parts = text.split(regex);
-
-  return parts.map((part, i) =>
-    regex.test(part) ? (
-      <mark key={i} style={{ background: "#FFF3CD", fontWeight: 600 }}>
-        {part}
-      </mark>
-    ) : (
-      <span key={i}>{part}</span>
-    )
-  );
 }
 
 export default function SearchResults({ query, results, onClose, onAddArticle }: SearchResultsProps) {
@@ -169,7 +150,7 @@ export default function SearchResults({ query, results, onClose, onAddArticle }:
                         marginBottom: "6px",
                       }}
                     >
-                      {highlightMatch(article.title, query)}
+                      {article.title}
                     </h3>
 
                     {/* Summary */}
@@ -185,7 +166,7 @@ export default function SearchResults({ query, results, onClose, onAddArticle }:
                         overflow: "hidden",
                       }}
                     >
-                      {highlightMatch(article.summary, query)}
+                      {article.summary}
                     </p>
 
                     {/* Tags */}
