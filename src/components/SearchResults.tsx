@@ -20,14 +20,17 @@ export default function SearchResults({ query, results, onClose, onAddArticle }:
       onClick={onClose}
     >
       <div
-        className="fixed top-20 left-0 right-0 mx-auto flex flex-col"
+        className="fixed top-20 flex flex-col"
         style={{
+          left: "50%",
+          transform: "translateX(-50%)",
           width: "90%",
           maxWidth: "800px",
           maxHeight: "calc(100vh - 140px)",
           background: "white",
           borderRadius: "4px",
           boxShadow: "0 8px 32px rgba(0, 0, 0, 0.12)",
+          zIndex: 51,
         }}
         onClick={e => e.stopPropagation()}
       >
