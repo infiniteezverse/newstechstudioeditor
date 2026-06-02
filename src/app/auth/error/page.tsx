@@ -1,9 +1,10 @@
 "use client";
 
 import { useSearchParams, useRouter } from "next/navigation";
+import { Suspense } from "react";
 import { AlertCircle } from "lucide-react";
 
-export default function AuthErrorPage() {
+function AuthErrorContent() {
   const searchParams = useSearchParams();
   const router = useRouter();
   const error = searchParams.get("error");
@@ -68,5 +69,22 @@ export default function AuthErrorPage() {
         </button>
       </div>
     </div>
+  );
+}
+
+export default function AuthErrorPage() {
+  return (
+    <Suspense
+      fallback={
+        <div
+          className="flex flex-col items-center justify-center min-h-screen"
+          style={{ background: "var(--canvas)" }}
+        >
+          <div style={{ color: "var(--ink-3)" }}>Loading...</div>
+        </div>
+      }
+    >
+      <AuthErrorContent />
+    </Suspense>
   );
 }

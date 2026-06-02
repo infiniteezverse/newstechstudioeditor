@@ -1,10 +1,10 @@
 "use client";
 
 import { useSearchParams, useRouter } from "next/navigation";
-import { useEffect } from "react";
+import { useEffect, Suspense } from "react";
 import { CheckCircle } from "lucide-react";
 
-export default function AuthSuccessPage() {
+function AuthSuccessContent() {
   const searchParams = useSearchParams();
   const router = useRouter();
   const service = searchParams.get("service");
@@ -50,5 +50,22 @@ export default function AuthSuccessPage() {
         </p>
       </div>
     </div>
+  );
+}
+
+export default function AuthSuccessPage() {
+  return (
+    <Suspense
+      fallback={
+        <div
+          className="flex flex-col items-center justify-center min-h-screen"
+          style={{ background: "var(--canvas)" }}
+        >
+          <div style={{ color: "var(--ink-3)" }}>Loading...</div>
+        </div>
+      }
+    >
+      <AuthSuccessContent />
+    </Suspense>
   );
 }
