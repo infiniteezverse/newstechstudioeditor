@@ -91,24 +91,21 @@ export default function Home() {
     if (v !== "feed") setSectionFilter(null);
   }
 
-  function searchArticles(query: string) {
+  async function searchArticles(query: string) {
     setSearchQuery(query);
     if (!query.trim()) {
       setSearchResults([]);
       return;
     }
 
-    const lowerQuery = query.toLowerCase();
-    // Search across MOCK_ARTICLES and REFRESH_POOL
-    const allArticles = [...MOCK_ARTICLES, ...REFRESH_POOL];
-    const filtered = allArticles.filter(
-      article =>
-        article.title.toLowerCase().includes(lowerQuery) ||
-        article.summary.toLowerCase().includes(lowerQuery) ||
-        article.tags.some(tag => tag.toLowerCase().includes(lowerQuery)) ||
-        article.category.toLowerCase().includes(lowerQuery)
-    );
-    setSearchResults(filtered);
+    try {
+      const response = await fetch(`/api/search?q=${encodeURIComponent(query)}`);
+      const data = await response.json();
+      setSearchResults(data.results || []);
+    } catch (error) {
+      console.error("Search failed:", error);
+      setSearchResults([]);
+    }
   }
 
   function handleAddArticle(article: Article) {
