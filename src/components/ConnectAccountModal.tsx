@@ -113,10 +113,25 @@ export default function ConnectAccountModal({ channelId, channelLabel, onClose, 
     }
   }
 
-  function handleOAuthClick() {
-    // In real implementation, this would redirect to OAuth endpoint
-    // e.g., window.location.href = `/api/auth/${channelId}`;
-    alert(`OAuth flow for ${channelLabel} - implement in backend`);
+  async function handleOAuthClick() {
+    setLoading(true);
+    try {
+      // Get authorization URL from backend
+      const response = await fetch(`/api/auth/${channelId}/authorize`);
+      const data = await response.json();
+
+      if (data.authUrl) {
+        // Redirect to OAuth provider
+        window.location.href = data.authUrl;
+      } else {
+        alert(`Failed to start ${channelLabel} authentication`);
+      }
+    } catch (error) {
+      console.error("OAuth error:", error);
+      alert(`Error connecting to ${channelLabel}`);
+    } finally {
+      setLoading(false);
+    }
   }
 
   return (

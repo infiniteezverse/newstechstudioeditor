@@ -19,16 +19,22 @@ export interface PublishResult {
 
 // Twitter/X Publisher
 export async function publishToTwitter(config: PublishConfig): Promise<PublishResult> {
-  const { credentials, content, tags } = config;
+  const { credentials, content, tags, title } = config;
   const accessToken = credentials.accessToken;
 
   if (!accessToken) {
-    return { success: false, error: "Twitter not connected" };
+    return { success: false, error: "Twitter not connected - please reconnect your account" };
   }
 
   try {
-    // Truncate content for Twitter (280 chars)
-    const tweetText = content.substring(0, 270) + (content.length > 270 ? "..." : "");
+    // Prepare tweet text (280 character limit)
+    // Include title if available
+    let tweetText = title ? `${title}\n\n${content}` : content;
+
+    // Truncate to 280 chars
+    if (tweetText.length > 280) {
+      tweetText = tweetText.substring(0, 277) + "...";
+    }
 
     const response = await fetch("https://api.twitter.com/2/tweets", {
       method: "POST",
@@ -43,18 +49,34 @@ export async function publishToTwitter(config: PublishConfig): Promise<PublishRe
     });
 
     if (!response.ok) {
-      throw new Error("Twitter API error");
+      const errorData = await response.json();
+      console.error("Twitter API error:", errorData);
+
+      // Handle token expiration
+      if (response.status === 401) {
+        return { success: false, error: "Twitter authentication expired - please reconnect" };
+      }
+
+      return {
+        success: false,
+        error: errorData.detail || "Failed to publish to Twitter"
+      };
     }
 
     const data = await response.json();
+    const twitterUrl = `https://x.com/i/web/status/${data.data.id}`;
+
     return {
       success: true,
       id: data.data.id,
-      url: `https://twitter.com/i/web/status/${data.data.id}`,
+      url: twitterUrl,
     };
   } catch (error) {
     console.error("Twitter publish error:", error);
-    return { success: false, error: "Failed to publish to Twitter" };
+    return {
+      success: false,
+      error: error instanceof Error ? error.message : "Failed to publish to Twitter"
+    };
   }
 }
 
