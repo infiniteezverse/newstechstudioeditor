@@ -99,7 +99,7 @@ export default function NewsFeed({
       >
         <div className="flex items-start justify-between">
           <div>
-            <p className="kicker" style={{ marginBottom: "5px", color: "var(--accent)", fontSize: "12px", letterSpacing: "0.1em" }}>Wire Feed</p>
+            <p className="kicker" style={{ marginBottom: "5px", color: "var(--accent)", fontSize: "12.5px", letterSpacing: "0.1em", fontWeight: 700 }}>Wire Feed</p>
           </div>
 
           <div className="flex items-center gap-1">
@@ -107,9 +107,9 @@ export default function NewsFeed({
               onClick={handleRefresh}
               className="mono flex items-center gap-1.5"
               style={{
-                fontSize: "10px",
+                fontSize: "10.5px",
                 letterSpacing: "0.07em",
-                fontWeight: 500,
+                fontWeight: 600,
                 padding: "5px 11px",
                 border: "1px solid var(--rule-heavy)",
                 color: "var(--ink-2)",
@@ -135,7 +135,7 @@ export default function NewsFeed({
         </div>
 
         <div className="flex items-center gap-3" style={{ marginTop: "8px" }}>
-          <span className="mono" style={{ fontSize: "11.5px", color: "var(--ink-2)", fontWeight: 500, letterSpacing: "0.05em" }}>
+          <span className="mono" style={{ fontSize: "12px", color: "var(--ink-2)", fontWeight: 600, letterSpacing: "0.05em" }}>
             {displayed.length} DISPATCHES
           </span>
           {pinnedCount > 0 && (
@@ -176,11 +176,11 @@ export default function NewsFeed({
             onClick={() => setFilter(f)}
             className="mono shrink-0"
             style={{
-              fontSize: "10px",
+              fontSize: "10.5px",
               letterSpacing: "0.07em",
               padding: "10px 11px",
               color: filter === f ? "var(--accent)" : "var(--ink-2)",
-              fontWeight: filter === f ? 600 : 400,
+              fontWeight: filter === f ? 700 : 500,
               borderBottom: filter === f ? "2px solid var(--accent)" : "2px solid transparent",
               marginBottom: "-1px",
               background: "transparent",
@@ -248,11 +248,11 @@ export default function NewsFeed({
                   {/* Category + sentiment */}
                   <div className="flex items-center justify-between" style={{ marginBottom: "7px" }}>
                     <div className="flex items-center gap-2">
-                      <span className="kicker" style={{ color: "var(--accent)", fontSize: "9.5px" }}>
+                      <span className="kicker" style={{ color: "var(--accent)", fontSize: "10px", fontWeight: 700 }}>
                         {article.category}
                       </span>
                       {article.trending && (
-                        <span className="mono" style={{ fontSize: "9px", color: "var(--ink-3)" }}>↑ TRENDING</span>
+                        <span className="mono" style={{ fontSize: "9.5px", color: "var(--ink-3)", fontWeight: 600 }}>↑ TRENDING</span>
                       )}
                     </div>
                     <span className="mono" style={{ fontSize: "9.5px", color: sent.color, fontWeight: 500 }}>
