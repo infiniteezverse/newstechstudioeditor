@@ -87,20 +87,54 @@ function transformWordPressArticle(post: any): Article {
   };
 }
 
+function scoreRelevance(article: Article, query: string): number {
+  const q = query.toLowerCase();
+  let score = 0;
+
+  // Exact phrase match in title = highest priority
+  if (article.title.toLowerCase().includes(q)) score += 100;
+
+  // Word matches in title
+  const titleWords = article.title.toLowerCase().split(/\s+/);
+  const queryWords = q.split(/\s+/);
+  queryWords.forEach(word => {
+    if (titleWords.some(tw => tw.includes(word))) score += 50;
+  });
+
+  // Exact phrase match in summary
+  if (article.summary.toLowerCase().includes(q)) score += 30;
+
+  // Word matches in summary
+  const summaryText = article.summary.toLowerCase();
+  queryWords.forEach(word => {
+    if (summaryText.includes(word)) score += 15;
+  });
+
+  // Tag matches
+  if (article.tags && Array.isArray(article.tags)) {
+    article.tags.forEach(tag => {
+      if (tag.toLowerCase().includes(q)) score += 40;
+    });
+  }
+
+  return score;
+}
+
 export async function GET(request: NextRequest) {
   const searchParams = request.nextUrl.searchParams;
   const query = searchParams.get("q");
 
   if (!query || query.trim().length === 0) {
-    return NextResponse.json({ results: [] });
+    return NextResponse.json({ results: [], query: "", count: 0 });
   }
 
   try {
-    // Call WordPress REST API
+    // Call WordPress REST API with larger result set for filtering
     const wpUrl = new URL("https://cryptonewsorg.com/wp-json/wp/v2/posts");
     wpUrl.searchParams.set("search", query);
-    wpUrl.searchParams.set("per_page", "20");
-    wpUrl.searchParams.set("_embed", "1"); // Include embedded content like categories/tags
+    wpUrl.searchParams.set("per_page", "50"); // Get more to filter
+    wpUrl.searchParams.set("_embed", "1");
+    wpUrl.searchParams.set("orderby", "relevance");
 
     const response = await fetch(wpUrl.toString(), {
       headers: {
@@ -115,13 +149,34 @@ export async function GET(request: NextRequest) {
     const posts = await response.json();
 
     // Transform WordPress posts to our Article format
-    const articles: Article[] = posts.map(transformWordPressArticle);
+    let articles: Article[] = posts.map(transformWordPressArticle);
 
-    return NextResponse.json({ results: articles });
+    // Client-side relevance filtering and ranking
+    const scoredArticles = articles
+      .map(article => ({
+        article,
+        score: scoreRelevance(article, query),
+      }))
+      .filter(({ score }) => score > 0) // Only keep articles with at least some relevance
+      .sort((a, b) => b.score - a.score) // Sort by relevance score descending
+      .slice(0, 15) // Return top 15 most relevant
+      .map(({ article }) => article);
+
+    return NextResponse.json({
+      results: scoredArticles,
+      query,
+      count: scoredArticles.length,
+      totalSearched: articles.length,
+    });
   } catch (error) {
     console.error("Search error:", error);
     return NextResponse.json(
-      { error: "Failed to search articles", results: [] },
+      {
+        error: "Failed to search articles",
+        results: [],
+        query,
+        count: 0,
+      },
       { status: 500 }
     );
   }

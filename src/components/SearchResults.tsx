@@ -1,6 +1,7 @@
 "use client";
 
-import { X, Plus } from "lucide-react";
+import { useState, useEffect } from "react";
+import { X, Plus, Search as SearchIcon } from "lucide-react";
 import type { Article } from "@/lib/mock-data";
 
 interface SearchResultsProps {
@@ -8,6 +9,24 @@ interface SearchResultsProps {
   results: Article[];
   onClose: () => void;
   onAddArticle: (article: Article) => void;
+}
+
+function highlightMatch(text: string, query: string): React.ReactNode {
+  if (!query) return text;
+
+  const queryWords = query.toLowerCase().split(/\s+/).filter(w => w);
+  const regex = new RegExp(`(${queryWords.join("|")})`, "gi");
+  const parts = text.split(regex);
+
+  return parts.map((part, i) =>
+    regex.test(part) ? (
+      <mark key={i} style={{ background: "#FFF3CD", fontWeight: 600 }}>
+        {part}
+      </mark>
+    ) : (
+      <span key={i}>{part}</span>
+    )
+  );
 }
 
 export default function SearchResults({ query, results, onClose, onAddArticle }: SearchResultsProps) {
@@ -40,19 +59,36 @@ export default function SearchResults({ query, results, onClose, onAddArticle }:
           style={{
             padding: "16px 20px",
             borderBottom: "1px solid var(--rule)",
+            background: results.length > 0 ? "transparent" : "#F8F8F5",
           }}
         >
           <div>
             <span className="mono" style={{ fontSize: "10px", color: "var(--ink-3)", letterSpacing: "0.1em" }}>
               SEARCH RESULTS
             </span>
-            <p style={{ fontSize: "14px", fontWeight: 600, color: "var(--ink)", marginTop: "4px" }}>
-              "{query}"
-            </p>
+            <div className="flex items-center gap-2" style={{ marginTop: "4px" }}>
+              <p style={{ fontSize: "14px", fontWeight: 600, color: "var(--ink)" }}>
+                "{query}"
+              </p>
+              {results.length > 0 && (
+                <span
+                  className="mono"
+                  style={{
+                    fontSize: "11px",
+                    color: "var(--ink-3)",
+                    background: "rgba(10, 25, 49, 0.07)",
+                    padding: "2px 8px",
+                    borderRadius: "2px",
+                  }}
+                >
+                  {results.length} match{results.length !== 1 ? "es" : ""}
+                </span>
+              )}
+            </div>
           </div>
           <button
             onClick={onClose}
-            style={{ color: "var(--ink-3)", padding: "4px" }}
+            style={{ color: "var(--ink-3)", padding: "4px", flexShrink: 0 }}
             onMouseEnter={e => (e.currentTarget.style.color = "var(--ink)")}
             onMouseLeave={e => (e.currentTarget.style.color = "var(--ink-3)")}
           >
@@ -67,10 +103,17 @@ export default function SearchResults({ query, results, onClose, onAddArticle }:
               style={{
                 padding: "40px 20px",
                 textAlign: "center",
-                color: "var(--ink-3)",
               }}
             >
-              <p style={{ fontSize: "14px" }}>No articles found for "{query}"</p>
+              <div style={{ marginBottom: "12px", color: "var(--ink-3)" }}>
+                <SearchIcon size={32} style={{ margin: "0 auto", opacity: 0.5 }} />
+              </div>
+              <p style={{ fontSize: "14px", color: "var(--ink)", fontWeight: 600, marginBottom: "4px" }}>
+                No articles found for "{query}"
+              </p>
+              <p style={{ fontSize: "12px", color: "var(--ink-3)", lineHeight: 1.5 }}>
+                Try searching with different keywords, or search for a single term like "Bitcoin", "DeFi", or "AI".
+              </p>
             </div>
           ) : (
             results.map((article, i) => (
@@ -126,7 +169,7 @@ export default function SearchResults({ query, results, onClose, onAddArticle }:
                         marginBottom: "6px",
                       }}
                     >
-                      {article.title}
+                      {highlightMatch(article.title, query)}
                     </h3>
 
                     {/* Summary */}
@@ -142,7 +185,7 @@ export default function SearchResults({ query, results, onClose, onAddArticle }:
                         overflow: "hidden",
                       }}
                     >
-                      {article.summary}
+                      {highlightMatch(article.summary, query)}
                     </p>
 
                     {/* Tags */}
