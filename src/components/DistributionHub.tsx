@@ -1,6 +1,8 @@
 "use client";
 
+import { useState } from "react";
 import { Send, CheckCircle, Clock, AlertCircle } from "lucide-react";
+import ConnectAccountModal, { type ChannelId } from "./ConnectAccountModal";
 
 const CHANNELS = [
   // Social & Community
@@ -40,8 +42,61 @@ const STATUS_STYLE: Record<string, { icon: React.ReactNode; color: string; label
 };
 
 export default function DistributionHub() {
+  const [selectedChannel, setSelectedChannel] = useState<ChannelId | null>(null);
+  const [connectedChannels, setConnectedChannels] = useState<Set<ChannelId>>(new Set(["twitter", "farcaster"]));
+
+  async function handleConnect(credentials: Record<string, string>) {
+    if (!selectedChannel) return;
+
+    try {
+      const response = await fetch("/api/channels/connect", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          channelId: selectedChannel,
+          credentials,
+        }),
+      });
+
+      if (response.ok) {
+        setConnectedChannels(prev => new Set([...prev, selectedChannel]));
+        setSelectedChannel(null);
+      }
+    } catch (error) {
+      console.error("Connection failed:", error);
+    }
+  }
+
+  async function handleDisconnect(channelId: ChannelId) {
+    try {
+      const response = await fetch("/api/channels/connect", {
+        method: "DELETE",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ channelId }),
+      });
+
+      if (response.ok) {
+        setConnectedChannels(prev => {
+          const next = new Set(prev);
+          next.delete(channelId);
+          return next;
+        });
+      }
+    } catch (error) {
+      console.error("Disconnection failed:", error);
+    }
+  }
+
   return (
     <div className="flex flex-col h-full overflow-y-auto" style={{ background: "var(--canvas)" }}>
+      {selectedChannel && (
+        <ConnectAccountModal
+          channelId={selectedChannel}
+          channelLabel={CHANNELS.find(ch => ch.id === selectedChannel)?.label || ""}
+          onClose={() => setSelectedChannel(null)}
+          onConnect={handleConnect}
+        />
+      )}
 
       {/* ── Header ── */}
       <div style={{ padding: "28px 32px 20px", borderBottom: "2px solid var(--rule-heavy)", background: "white" }}>
@@ -80,19 +135,19 @@ export default function DistributionHub() {
                       key={ch.id}
                       style={{
                         background: "white",
-                        border: `1px solid ${ch.connected ? "var(--accent-2)" : "var(--rule)"}`,
-                        borderLeft: ch.connected ? "3px solid var(--accent)" : "3px solid transparent",
+                        border: `1px solid ${connectedChannels.has(ch.id as ChannelId) ? "var(--accent-2)" : "var(--rule)"}`,
+                        borderLeft: connectedChannels.has(ch.id as ChannelId) ? "3px solid var(--accent)" : "3px solid transparent",
                         padding: "14px 16px",
                         display: "flex",
                         alignItems: "center",
                         justifyContent: "space-between",
                         gap: "10px",
-                        opacity: ch.connected ? 1 : 0.75,
+                        opacity: connectedChannels.has(ch.id as ChannelId) ? 1 : 0.75,
                         transition: "all 0.12s",
                       }}
                       onMouseEnter={e => {
                         const el = e.currentTarget as HTMLElement;
-                        if (!ch.connected) el.style.background = "#FAFAF7";
+                        if (!connectedChannels.has(ch.id as ChannelId)) el.style.background = "#FAFAF7";
                       }}
                       onMouseLeave={e => {
                         const el = e.currentTarget as HTMLElement;
@@ -101,7 +156,7 @@ export default function DistributionHub() {
                     >
                       <div>
                         <p style={{ fontSize: "12.5px", fontWeight: 500, color: "var(--ink)", marginBottom: "3px" }}>{ch.label}</p>
-                        {ch.connected ? (
+                        {connectedChannels.has(ch.id as ChannelId) ? (
                           <p className="mono" style={{ fontSize: "9px", color: "var(--ink-3)" }}>
                             {ch.followers} · {ch.lastPost}
                           </p>
@@ -111,14 +166,22 @@ export default function DistributionHub() {
                       </div>
                       <button
                         className="mono shrink-0"
+                        onClick={() => {
+                          const isConnected = connectedChannels.has(ch.id as ChannelId);
+                          if (isConnected) {
+                            handleDisconnect(ch.id as ChannelId);
+                          } else {
+                            setSelectedChannel(ch.id as ChannelId);
+                          }
+                        }}
                         style={{
                           fontSize: "8px",
                           padding: "5px 10px",
                           letterSpacing: "0.07em",
                           fontWeight: 600,
-                          background: ch.connected ? "transparent" : "var(--accent)",
-                          color: ch.connected ? "var(--accent)" : "white",
-                          border: ch.connected ? "1px solid var(--accent)" : "none",
+                          background: connectedChannels.has(ch.id as ChannelId) ? "transparent" : "var(--accent)",
+                          color: connectedChannels.has(ch.id as ChannelId) ? "var(--accent)" : "white",
+                          border: connectedChannels.has(ch.id as ChannelId) ? "1px solid var(--accent)" : "none",
                           borderRadius: "2px",
                         }}
                         onMouseEnter={e => {
@@ -128,11 +191,12 @@ export default function DistributionHub() {
                         }}
                         onMouseLeave={e => {
                           const el = e.currentTarget as HTMLElement;
-                          el.style.background = ch.connected ? "transparent" : "var(--accent)";
-                          el.style.color = ch.connected ? "var(--accent)" : "white";
+                          const isConnected = connectedChannels.has(ch.id as ChannelId);
+                          el.style.background = isConnected ? "transparent" : "var(--accent)";
+                          el.style.color = isConnected ? "var(--accent)" : "white";
                         }}
                       >
-                        {ch.connected ? "MANAGE" : "CONNECT"}
+                        {connectedChannels.has(ch.id as ChannelId) ? "DISCONNECT" : "CONNECT"}
                       </button>
                     </div>
                   ))}
