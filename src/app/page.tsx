@@ -85,6 +85,13 @@ export default function Home() {
   function handleViewChange(v: string) {
     setActiveView(v);
     if (v !== "feed") setSectionFilter(null);
+    // Collapse Wire Feed when entering Editorial Studio for focused editing
+    if (v === "studio") {
+      setFeedOpen(false);
+    } else if (v === "feed") {
+      // Ensure Wire Feed is open when viewing Wire Feed
+      setFeedOpen(true);
+    }
   }
 
   const isStudioView = activeView === "studio" || activeView === "feed";
