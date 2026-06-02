@@ -26,7 +26,7 @@ const DEFAULT_AI_W   = 344;
 const MIN_PANEL_W    = 220;
 
 export default function Home() {
-  const [activeView, setActiveView]         = useState("studio");
+  const [activeView, setActiveView]         = useState("feed");
   const [sectionFilter, setSectionFilter]   = useState<string | null>(null);
   const [sourceArticle, setSourceArticle]   = useState<Article | null>(null);
   const [selectedIds, setSelectedIds]       = useState<Set<string>>(new Set());
@@ -85,16 +85,9 @@ export default function Home() {
   function handleViewChange(v: string) {
     setActiveView(v);
     if (v !== "feed") setSectionFilter(null);
-    // Collapse Wire Feed when entering Editorial Studio for focused editing
-    if (v === "studio") {
-      setFeedOpen(false);
-    } else if (v === "feed") {
-      // Ensure Wire Feed is open when viewing Wire Feed
-      setFeedOpen(true);
-    }
   }
 
-  const isStudioView = activeView === "studio" || activeView === "feed";
+  const isStudioView = activeView === "feed";
 
   return (
     <div className="flex h-full" style={{ background: "var(--canvas)" }}>

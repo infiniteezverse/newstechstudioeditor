@@ -5,7 +5,6 @@ import { Rss, PenLine, Archive, Send, Settings, ChevronLeft, ChevronRight } from
 
 const NAV = [
   { icon: Rss,      label: "Wire Feed",        id: "feed",       badge: "6" },
-  { icon: PenLine,  label: "Editorial Studio",  id: "studio" },
   { icon: Archive,  label: "Knowledge Vault",   id: "vault" },
   { icon: Send,     label: "Distribution",      id: "distribute" },
   { icon: Settings, label: "Settings",          id: "settings" },
