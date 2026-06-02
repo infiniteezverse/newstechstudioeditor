@@ -49,7 +49,7 @@ export default function Sidebar({ activeView, onViewChange, onSectionClick }: Si
         {!collapsed && (
           <h1
             className="serif"
-            style={{ fontSize: "15px", fontWeight: 700, color: "white", letterSpacing: "-0.01em", lineHeight: 1.25 }}
+            style={{ fontSize: "16px", fontWeight: 700, color: "white", letterSpacing: "-0.01em", lineHeight: 1.25 }}
           >
             Tech News<br />Studio
           </h1>
@@ -72,7 +72,7 @@ export default function Sidebar({ activeView, onViewChange, onSectionClick }: Si
           className="flex items-center gap-2"
           style={{ padding: "9px 16px", borderBottom: "1px solid var(--rule-heavy)", background: "#F5F5F2", flexShrink: 0 }}
         >
-          <span style={{ width: "8px", height: "8px", borderRadius: "50%", background: "#0F5C2E", flexShrink: 0, display: "inline-block" }} />
+          <span style={{ width: "10px", height: "10px", borderRadius: "50%", background: "#0F5C2E", flexShrink: 0, display: "inline-block" }} />
           <span className="mono" style={{ fontSize: "11px", color: "var(--ink-2)", letterSpacing: "0.07em", fontWeight: 500 }}>
             LIVE ·{" "}
             <a
