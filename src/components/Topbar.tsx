@@ -3,8 +3,13 @@
 import { useState } from "react";
 import { Search, Bell, Wallet } from "lucide-react";
 
-export default function Topbar() {
+interface TopbarProps {
+  onSearchChange?: (query: string) => void;
+}
+
+export default function Topbar({ onSearchChange }: TopbarProps) {
   const [focused, setFocused] = useState(false);
+  const [searchQuery, setSearchQuery] = useState("");
 
   const dateStr = new Date().toLocaleDateString("en-US", {
     weekday: "long", year: "numeric", month: "long", day: "numeric",
@@ -45,6 +50,11 @@ export default function Topbar() {
         <input
           type="text"
           placeholder="Search articles, topics, signals..."
+          value={searchQuery}
+          onChange={e => {
+            setSearchQuery(e.target.value);
+            onSearchChange?.(e.target.value);
+          }}
           style={{ flex: 1, fontSize: "13px", color: "var(--ink)", background: "transparent", letterSpacing: "0.01em" }}
           onFocus={() => setFocused(true)}
           onBlur={() => setFocused(false)}

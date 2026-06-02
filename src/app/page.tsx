@@ -9,7 +9,8 @@ import ProEditor from "@/components/ProEditor";
 import KnowledgeVault from "@/components/KnowledgeVault";
 import DistributionHub from "@/components/DistributionHub";
 import SettingsPanel from "@/components/SettingsPanel";
-import type { Article } from "@/lib/mock-data";
+import SearchResults from "@/components/SearchResults";
+import { MOCK_ARTICLES, REFRESH_POOL, type Article } from "@/lib/mock-data";
 
 const SECTION_TO_FILTER: Record<string, string> = {
   "Layer 2":        "Layer2",
@@ -36,6 +37,9 @@ export default function Home() {
   const [aiOpen, setAiOpen]                 = useState(true);
   const [feedW, setFeedW]                   = useState(DEFAULT_FEED_W);
   const [aiW, setAiW]                       = useState(DEFAULT_AI_W);
+  const [searchQuery, setSearchQuery]       = useState("");
+  const [searchResults, setSearchResults]   = useState<Article[]>([]);
+  const [feedArticles, setFeedArticles]     = useState<Article[]>(MOCK_ARTICLES);
 
   // Drag state refs — avoid re-renders during drag
   const dragging   = useRef<"feed" | "ai" | null>(null);
@@ -87,6 +91,35 @@ export default function Home() {
     if (v !== "feed") setSectionFilter(null);
   }
 
+  function searchArticles(query: string) {
+    setSearchQuery(query);
+    if (!query.trim()) {
+      setSearchResults([]);
+      return;
+    }
+
+    const lowerQuery = query.toLowerCase();
+    // Search across MOCK_ARTICLES and REFRESH_POOL
+    const allArticles = [...MOCK_ARTICLES, ...REFRESH_POOL];
+    const filtered = allArticles.filter(
+      article =>
+        article.title.toLowerCase().includes(lowerQuery) ||
+        article.summary.toLowerCase().includes(lowerQuery) ||
+        article.tags.some(tag => tag.toLowerCase().includes(lowerQuery)) ||
+        article.category.toLowerCase().includes(lowerQuery)
+    );
+    setSearchResults(filtered);
+  }
+
+  function handleAddArticle(article: Article) {
+    // Check if article is already in the feed
+    if (!feedArticles.find(a => a.id === article.id)) {
+      setFeedArticles(prev => [article, ...prev]);
+    }
+    setSearchQuery("");
+    setSearchResults([]);
+  }
+
   const isStudioView = activeView === "feed";
 
   return (
@@ -94,7 +127,18 @@ export default function Home() {
       <Sidebar activeView={activeView} onViewChange={handleViewChange} onSectionClick={handleSectionClick} />
 
       <div className="flex flex-col flex-1 min-w-0 h-full">
-        <Topbar />
+        <Topbar onSearchChange={searchArticles} />
+
+        {/* Search Results Modal */}
+        <SearchResults
+          query={searchQuery}
+          results={searchResults}
+          onClose={() => {
+            setSearchQuery("");
+            setSearchResults([]);
+          }}
+          onAddArticle={handleAddArticle}
+        />
 
         <div className="flex flex-1 min-h-0 overflow-hidden">
 
@@ -118,6 +162,7 @@ export default function Home() {
                     onCollapse={() => setFeedOpen(false)}
                     initialFilter={sectionFilter}
                     onPinnedChange={setPinnedArticles}
+                    articles={feedArticles}
                   />
                 ) : (
                   <CollapsedStrip label="Wire Feed" badge={6} color="var(--panel-feed)" onClick={() => setFeedOpen(true)} />

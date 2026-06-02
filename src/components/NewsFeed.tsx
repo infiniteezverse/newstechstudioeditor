@@ -20,14 +20,15 @@ interface NewsFeedProps {
   onCollapse: () => void;
   initialFilter?: string | null;
   onPinnedChange?: (articles: Article[]) => void;
+  articles?: Article[];
 }
 
 export default function NewsFeed({
-  onGenerateTake, selectedIds, onToggleSelect, onCollapse, initialFilter, onPinnedChange,
+  onGenerateTake, selectedIds, onToggleSelect, onCollapse, initialFilter, onPinnedChange, articles: initialArticles,
 }: NewsFeedProps) {
   const [filter, setFilter]     = useState<FilterVal>("All");
   const [spinning, setSpinning] = useState(false);
-  const [articles, setArticles] = useState<Article[]>(MOCK_ARTICLES);
+  const [articles, setArticles] = useState<Article[]>(initialArticles || MOCK_ARTICLES);
   const [pinnedIds, setPinnedIds] = useState<Set<string>>(new Set());
   const [usedRefreshIds, setUsedRefreshIds] = useState<Set<string>>(new Set());
 
